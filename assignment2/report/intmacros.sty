@@ -1,0 +1,187 @@
+
+% intmacros.sty 
+%
+% a style file for publications in interval analysis 
+% containing macros for latex2e, to be used, e.g., with
+% \documentclass[a4paper,12pt]{article}
+% \input intmacros.sty
+%
+% prepared by Arnold Neumaier, May 31, 2002
+% see http://www.mat.univie.ac.at/~neum/software/int/
+% for the accompanying paper
+
+
+\usepackage{amsfonts}
+\usepackage{amsmath,amsthm,amssymb}
+
+\hyphenation{in-ter-val}
+\hyphenation{in-ter-vals}
+\hyphenation{com-po-nent}
+\hyphenation{com-po-nents}
+\hyphenation{sys-tem}
+\hyphenation{sys-tems}
+\hyphenation{pol-y-no-mi-al}
+\hyphenation{pol-y-no-mi-als}
+\hyphenation{pre-con-di-tion-er}
+\hyphenation{pre-con-di-tion-ers}
+
+% mathematical functions
+\def\fct#1{{\mathop{\rm #1}}}   % general macro for functions font  
+\def\abs{\fct{abs}}             % absolute value function
+\def\sign{\fct{sign}}           % sign function
+\def\re{\fct{Re\,}}             % real part; \Re gives old-fashioned Re
+\def\im{\fct{Im\,}}             % imag. part; \Im gives old-fashioned Im
+\def\argmax{\mathop{\rm argmax}}% argmax; indices appear below word
+\def\argmin{\mathop{\rm argmin}}% argmin; indices appear below word
+
+% interval functions
+\def\cch{\fct{cch}\,}           % closed convex hull
+\def\ch{\fct{ch}\,}             % convex hull
+\def\cond{\fct{cond\,}}         % condition number
+\def\dev{\fct{dev\,}}           % deviation
+\def\diag{\fct{diag}}           % diagonal vector
+\def\Diag{\fct{Diag}\,}         % diagonal matrix
+\def\dim{\fct{dim\,}}           % dimension of a vector
+\def\dist{\fct{dist}}           % hyper-distance
+\def\fl{\fct{fl}} 		% floating point evaluation
+\def\flint{\fct{flint}} 	% outward interval evaluation
+\def\iint{{\fct{int\,}}}        % interior; \int is already integral
+\def\imid{\fct{mid\,}}          % midpoint; \mid is already set-|
+\def\rad{\fct{rad\,}}           % radius
+\def\range{\fct{range}}         % range
+\def\set{\fct{set}} 		% set (Minkowski) evaluation
+\def\ivert{\fct{vert\,}}        % vertex set; \vert is vertical line
+\def\wid{\fct{wid\,}}           % width
+                                 
+\def\ol{\overline}              % overline (upper bound)
+\def\ul{\underline}             % underline (lower bound)
+\def\inadd{\oplus}              % inner addition
+\def\insub{\ominus}             % inner subtraction
+\def\ihull{\Box}		% interval hull
+\def\rounddown{{\tt rounddown}}
+\def\roundup{{\tt roundup}}
+\def\eps{\varepsilon}
+\def\phi{\varphi}
+
+% open faced letters for special sets
+\def\Az{\mathbb{A}}
+\def\Bz{\mathbb{B}}
+\def\Cz{\mathbb{C}}
+\def\Dz{\mathbb{D}}
+\def\Ez{\mathbb{E}}
+\def\Fz{\mathbb{F}}
+\def\Gz{\mathbb{G}}
+\def\Hz{\mathbb{H}}
+\def\Iz{\mathbb{I}}
+\def\Jz{\mathbb{J}}
+\def\Kz{\mathbb{K}}
+\def\Lz{\mathbb{L}}
+\def\Mz{\mathbb{M}}
+\def\Nz{\mathbb{N}}
+\def\Oz{\mathbb{O}}
+\def\Pz{\mathbb{P}}
+\def\Qz{\mathbb{Q}}
+\def\Rz{\mathbb{R}}
+\def\Sz{\mathbb{S}}
+\def\Tz{\mathbb{T}}
+\def\Uz{\mathbb{U}}
+\def\Vz{\mathbb{V}}
+\def\Wz{\mathbb{W}}
+\def\Xz{\mathbb{X}}
+\def\Yz{\mathbb{Y}}
+\def\Zz{\mathbb{Z}}
+\def\Czr{\Cz_{\mbox{\rm \scriptsize rect}}} % set of complex rectangles
+\def\Czd{\Cz_{\mbox{\rm \scriptsize disc}}} % set of complex discs
+
+% boldface letters for intervals
+%\def\bfm#1{\protect{\makebox{\boldmath $#1$}}}
+\def\a {\mathbf{a}}
+\def\b {\mathbf{b}}
+\def\c {\mathbf{c}}
+\def\d {\mathbf{d}}
+\def\e {\mathbf{e}}
+\def\f {\mathbf{f}}
+\def\g {\mathbf{g}}
+\def\h {\mathbf{h}}
+\def\ii {\mathbf{i}}       % \i is already 'i without dot'
+\def\j {\mathbf{j}}
+\def\k {\mathbf{k}}
+\def\l {\mathbf{l}}
+\def\m {\mathbf{m}}
+\def\n {\mathbf{n}}
+\def\o {\mathbf{o}}
+\def\p {\mathbf{p}}
+\def\q {\mathbf{q}}
+\def\r {\mathbf{r}}
+\def\s {\mathbf{s}}
+\def\t {\mathbf{t}}
+\def\u {\mathbf{u}}
+\def\vv {\mathbf{v}}       % \v is already 'check' 
+\def\w {\mathbf{w}}
+\def\x {\mathbf{x}}
+\def\y {\mathbf{y}}
+\def\z {\mathbf{z}}
+\def\A {\mathbf{A}}
+\def\B {\mathbf{B}}
+\def\C {\mathbf{C}}
+\def\DD{\mathbf{D}}        % \D is already \displaystyle
+\def\E {\mathbf{E}}
+\def\F {\mathbf{F}}
+\def\G {\mathbf{G}}
+\def\H {\mathbf{H}}
+\def\I {\mathbf{I}}
+\def\J {\mathbf{J}}
+\def\K {\mathbf{K}}
+\def\L {\mathbf{L}}
+\def\M {\mathbf{M}}
+\def\N {\mathbf{N}}
+\def\O {\mathbf{O}}
+\def\P {\mathbf{P}}
+\def\Q {\mathbf{Q}}
+\def\R {\mathbf{R}}
+\def\S {\mathbf{S}}
+\def\T {\mathbf{T}}
+\def\U {\mathbf{U}}
+\def\V {\mathbf{V}}
+\def\W {\mathbf{W}}
+\def\X {\mathbf{X}}
+\def\Y {\mathbf{Y}}
+\def\Z {\mathbf{Z}}
+
+% boldface greek letters for intervals
+
+\def\bsalpha {\boldsymbol\alpha}
+\def\bsbeta {\boldsymbol\beta}
+\def\bsgamma {\boldsymbol\gamma}
+\def\bsGamma {\boldsymbol\Gamma}
+\def\bsdelta {\boldsymbol\delta}
+\def\bsDelta {\boldsymbol\Delta}
+\def\bslambda {\boldsymbol\lambda}
+\def\bsLambda {\boldsymbol\Lambda}
+\def\bsepsilon {\boldsymbol\epsilon}
+\def\bstheta {\boldsymbol\theta}
+\def\bsTheta {\boldsymbol\Theta}
+\def\bsmu {\boldsymbol\mu}
+\def\bspi {\boldsymbol\pi}
+\def\bsPi {\boldsymbol\Pi}
+\def\bsrho {\boldsymbol\rho}
+\def\bssigma {\boldsymbol\sigma}
+\def\bsSigma {\boldsymbol\Sigma}
+\def\invSigma {\boldsymbol\Sigma^{-1}}
+\def\bstau {\boldsymbol\tau}
+
+%This defines the command \bb{} which prints the passed parameter in Blackboard
+%bold style. It's a shorter version of the command \mathbb{}
+\newcommand{\bb}[1]{\mathbb{#1}}
+\newcommand{\expectation}{\mathbb{E}}
+
+
+% MATH OPERATORS
+
+\DeclareMathOperator{\Tr}{tr}
+\def\Ind{\mathbb{I}}
+
+
+% DISTRIBUTIONS
+
+\DeclareMathOperator{\Cat}{\operatorname{Cat}}

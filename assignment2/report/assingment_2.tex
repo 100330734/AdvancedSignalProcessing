@@ -1,0 +1,162 @@
+% --------------------------------------------------------------
+% This is all preamble stuff that you don't have to worry about.
+% Head down to where it says "Start here"
+% --------------------------------------------------------------
+ 
+\documentclass[12pt]{article}
+ 
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{intmacros}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[backend=biber, style=ieee, isbn=false,sortcites, maxbibnames=5, minbibnames=1]{biblatex}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+\usepackage[]{hyperref}
+\hypersetup{
+	colorlinks   = true, %Colours links instead of ugly boxes
+	urlcolor     = blue, %Colour for external hyperlinks
+	linkcolor    = blue, %Colour of internal links
+	citecolor   = green %Colour of citations
+}
+\addbibresource{bibliography.bib}
+
+
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{reflection}[2][Reflection]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{proposition}[2][Proposition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+ 
+ 
+% OPERATORS
+
+\begin{document}
+ 
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+ 
+%\renewcommand{\qedsymbol}{\filledbox}
+ 
+\title{Assignment 2: HMM for Categorical Data Sequences}
+\author{Daniel Barrejón Moreno} 
+\maketitle
+ 
+\section{Complete data log likelihood}
+
+\noindent We have the following marginal likelihood
+\begin{equation}
+p \left( \mathbf { y } _ { t } | s _ { t } = k , \mathbf { B } \right) = \prod _ { j = 1 } ^ { D _ { t } } \Cat \left( y _ { t j } | \mathbf { b } _ { k } \right).
+\end{equation}
+
+\noindent We need to find the complete data log likelihood for the joint distribution of $S$ and $Y$ for $N$ sequences. First of all, the likelihood will look as follows
+\begin{equation}
+p(S ,Y|\bstheta ) = p(Y|S,\bstheta)p(S|\bstheta)  = \prod _ { n = 1 } ^ { N } \left( p \left( s _ { 1 } ^ { n }|\bspi \right) \prod _ { t = 2 } ^ { T _ { n } } p \left( s _ { t } ^ { n } | s _ { t - 1 } ^ { n } | \A \right) \right) \left( \prod _ { t = 1 } ^ { T _ { n } } p \left( \mathbf { y } _ { t } ^ { n } | s _ { t } ^ { n } | \B\right) \right),
+\end{equation}
+and taking logarithms we get,
+\begin{align}
+\log p ( S , Y | \boldsymbol { \theta } ) & = \log \prod _ { n = 1 } ^ { N } \left( p \left( s _ { 1 } ^ { n } | \boldsymbol { \pi } \right) \prod _ { t = 2 } ^ { T _ { n } } p \left( s _ { t } ^ { n } | s _ { t - 1 } ^ { n } , \mathbf { A } \right) \right) \left( \prod _ { t = 1 } ^ { T _ { n } } p \left( \mathbf { y } _ { t } ^ { n } | s _ { t } ^ { n } , \mathbf { B } \right) \right)\\
+& = 
+\end{align}
+
+\clearpage
+
+
+
+ 
+\textbf{ Mixture model of categorical} \begin{equation}
+     p(\x|\bstheta) = \sum_{k=1}^{K}\pi_k\prod_{j=1}^{D}\Cat(x_j|\bstheta_k)
+ \end{equation}
+
+\textbf{Incomplete data likelihood}
+\begin{equation}
+    p(\X,\bstheta) = \prod_{i=1}^{N}\sum_{k=1}^{K}\pi_k\prod_{j=1}^{D}\Cat(x_{ij}|\bstheta)
+\end{equation}
+
+\textbf{PDF x given z}
+\begin{equation}
+p(\x_i|z_i,\bstheta) = \prod_{k=1}^{K}\prod_{j=1}^{D}\Cat(x_{ij}|\bstheta_k)^{\Ind (z_i=k)}
+\end{equation}
+
+\textbf{Marginal for z}
+\begin{equation}
+    p(z_i|\bstheta) = \prod_{k=1}^{K}\pi_k^{\Ind (z_i=k)}
+\end{equation}
+
+\textbf{Marginal for x}
+\begin{align}
+    p(\x_i) & = \prod_{j=1}^D\Cat(x_{ij}|\bstheta) = \prod_{j=1}^D\prod_{m=1}^I\theta_m^{\Ind(x_{i,j}=m)} = \prod_{m=1}^I\prod_{j=1}^D\theta_m^{\Ind(x_{i,j}=m)} \\
+    & = \prod_{m=1}^I\theta_m^{\sum_{j=1}^D {\Ind(x_{i,j}=m)}} = \prod_{m=1}^I \theta_m^{\mu_{i,m}},
+\end{align}
+where
+\begin{equation}
+    \mu_{i,m} = \sum_{j=1}^D {\Ind(x_{i,j}=m)}
+\end{equation}
+
+\section{Log-likelihood $l_c$}
+\textbf{Complete data log-likelihood}
+\begin{align}
+    l_c(\bstheta) & = \ln p(\mathcal{D},\mathcal{Z}|\bstheta) = \sum_{i=1}^{N}\log (p(\x_i|\z_i,\bstheta) p(\z_i|\bstheta)) =  \sum_{i=1}^{N}\log \left(\prod_{k=1}^K(\pi_k\prod_{j=1}^D \Cat(x_{ij}|\bstheta_k))^{\Ind (z_i=k)}\right)\\
+    & = \sum_{i=1}^N\sum_{k=1}^K\Ind (z_i=k) \log\left( \pi_k\prod_{j=1}^D\Cat(x_{ij}|\bstheta_k)\right) \\
+    & =  \sum_{i=1}^N\sum_{k=1}^K\Ind (z_i=k) \log \pi_k + \sum_{i=1}^N\sum_{k=1}^K\Ind (z_i=k) \log \prod_{m=1}^I \theta_{k,m}^{\mu_{i,m}}\\
+    & = \sum_{i=1}^N\sum_{k=1}^K\Ind (z_i=k) \log \pi_k + \sum_{i=1}^N\sum_{k=1}^K\Ind (z_i=k) \sum_{m=1}^I \mu_{i,m}\log \theta_{k,m}
+    \end{align}
+    
+   
+\section{3. E-step: Q function}
+\textbf{Expectation Step: xn}\\
+
+Taking the expectation with respect to the latent variables $z$ we get the following expected complete data log-likelihood.
+
+\begin{align}
+    Q(\bstheta^t, \bstheta^{t-1}) & = \expectation_Z\{l_c(\bstheta|\mathcal{D},\bstheta^{t-1})\} = \expectation_Z\{\sum_{i=1}^N\sum_{k=1}^K\Ind (z_i=k) \log \pi_k + \sum_{i=1}^N\sum_{k=1}^K\Ind (z_i=k) \sum_{m=1}^I \mu_{i,m}\log \theta_{k,m}\}\\
+    & = \sum_{i=1}^N\sum_{k=1}^K\expectation_Z\{\Ind (z_i=k)\} \log \pi_k + \sum_{i=1}^N\sum_{k=1}^K\expectation_Z\{\Ind(z_i=k)\} \sum_{m=1}^I \mu_{i,m}\log \theta_{k,m}\\
+    & = \sum_{i=1}^N\sum_{k=1}^K r_{i,k}\log \pi_k + \sum_{i=1}^N\sum_{k=1}^K r_{i,k}\sum_{m=1}^I \mu_{i,m}\log \theta_{k,m} ,
+\end{align}
+where 
+\begin{align}
+	r_{i,k} &= \expectation_Z\{ \Ind(z_i=k) \} = p(z_i = k|\x_i,\bstheta^{t-1}) = \frac{p(z_i=k,\x_i|\bstheta^{t-1})}{p(\x_i|\bstheta^{t-1})} = \frac{p(z_i=k,\x_i|\bstheta^{t-1})}{\sum_{k\prime}^{K}p(z_i=k\prime,\x_i|\bstheta^{t-1})}\\
+	& = \frac{\pi_k p(x_i|\bstheta_k)}{\sum_{k\prime}^K \pi_{k\prime} p(x_i|\bstheta_{k\prime})} =
+	\frac{\pi_k\prod_{j=1}^{D}\Cat(x_{i,j}|\bstheta_k)}{\sum_{k\prime}^{K} \pi_{k\prime} \prod_{j=1}^{D}\Cat(x_{i,j}|\bstheta_k\prime)}
+\end{align}
+
+
+\section{M-step: Maximization}
+
+\subsection{Maximization of $\pi_k$}
+
+
+\begin{equation}
+	\hat{\pi_k} = \frac{\sum_{i=1}^N r_{i,k}}{N} = \frac{N_k}{N},
+\end{equation}
+where
+\begin{equation}
+	N_k = \sum_{i=1}^N r_{i,k}
+\end{equation}
+
+\subsection{Maximization of $\bstheta_k$}
+
+\begin{equation}
+	\hat{\bstheta}_{k,m} = \frac{\sum_{i=1}^N r_{i,k}\mu_{i,m}}{\sum_{m=1}^I \sum_{i=1}^N r_{i,k} \mu_{i,m}}
+\end{equation}
+
+
+
+
+\nocite{*}
+\printbibliography
+
+\end{document}
+
