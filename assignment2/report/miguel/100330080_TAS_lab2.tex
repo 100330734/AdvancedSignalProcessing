@@ -57,7 +57,7 @@ So the complete data log-likelihood is written in this way
 \begin{split}
 l_{c}\left(\boldsymbol\theta\right) &= \sum\limits_{n=1}^{N}\sum\limits_{k=1}^{K}\indicator \lbrace s_{1}^{n}=k|Y,\boldsymbol\theta\rbrace \log(\pi_{k}) + \\
 &+ \sum\limits_{n=1}^{N}\sum\limits_{k=1}^{K}\sum\limits_{k'=1}^{K}\sum\limits_{t=1}^{T_{n}}\indicator \lbrace s_{t-1}^{n}=k,s_{t}^{n}=k'|Y,\boldsymbol\theta\rbrace \log(a_{k,k'}) + \\
-&+ \sum\limits_{n=1}^{N}\sum\limits_{t=1}^{T_{n}}\sum\limits_{m=1}^{I}\mu^{n}_{t,m} \log(\theta_{k,m}).
+&+ \sum\limits_{n=1}^{N}\sum\limits_{t=1}^{T_{n}}  \indicator \lbrace s_{t}^{n}=k|Y,\boldsymbol\theta\rbrace    \sum\limits_{m=1}^{I}\mu^{n}_{t,m} \log(\theta_{k,m}).
 \end{split}
 \end{equation}
 \section{Expression for the expected complete data log likelihood}
@@ -77,7 +77,7 @@ Where
 \end{equation}
 \noindent And being $\xi _ { n,t } ( k , k' )$ 
 \begin{equation}
-\xi _ { n,t } ( k , k' ) = \alpha _ { t }^{n} ( k ) a _ { k,k' } \prod\limits_{m=1}^{I} \theta_{k,m}^{\mu^{n}_{t+1,m}} \beta _ { t + 1 }^{n} ( k' ).
+\xi _ { n,t } ( k , k' ) = \alpha _ { t -1}^{n} ( k ) a _ { k,k' } \prod\limits_{m=1}^{I} \theta_{k,m}^{\mu^{n}_{t,m}} \beta _ { t  }^{n} ( k' ).
 \end{equation}
 The terms $\alpha$ and $\beta$ are computed by means of the forward-backward algorithm as follows
 \begin{align}
