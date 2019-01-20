@@ -6,11 +6,11 @@ N = length(observed); % number of sequences
 I = length(dictionary); % number of categories
 Tn = length(observed{1}); % number of documents
 
-mu = zeros(Tn,I,N);
+mu = cell(1,N);
 
 for i = 1:N
     seq_i = observed{i};
-    mu(:,:,i) = tf_matrix_computer(seq_i,dictionary);
+    mu{i} = tf_matrix_computer(seq_i,dictionary);
 end
 
 end

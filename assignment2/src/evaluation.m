@@ -1,23 +1,29 @@
-function Q = evaluation(pi,theta,prior,r,mu,MAP)
+function Q = evaluation(pi,A,theta,gamma,xi,mu)
 %EVALUATION Summary of this function goes here
-%   Detailed expla ation goes here
-K = size(theta,1);
-% ML
-Q = sum(r*log(pi'))+ sum(sum(r.*(mu*log(theta)')));
 
+N = length(gamma);
+T = size(mu{1},1);
 
-if(MAP)
-% MAP
+pi_term = 0;
+A_term = 0;
+theta_term = 0;
 
-alpha = prior.alpha;
-beta = prior.beta;
+for n = 1:1:N
+    % pi term
+    pi_term = pi_term + gamma{n}(:,1)'*log(pi);
+    
+    % a term
+%     rep_A = repmat(A,1,1,T-1);
+%     rep_A = permute(rep_A, [3, 1, 2]);
+%     A_term = A_term + sum(sum(sum(xi{n}.*log(rep_A))));
 
-pi(pi==0) = 1e-323;
-theta(theta==0) = 1e-323;
+    A_term = A_term + sum(sum(xi{n}.*log(A)));
+    
+    % theta term
+    prod_term = gamma{n}'.*(mu{n}*log(theta'));
 
-Q = Q + ...
-    + log_betaprior(beta) + beta*log(pi') - sum(log(pi)) ... % Prior pi term
-    + K*log_betaprior(alpha) + sum(sum(alpha*log(theta)')) - sum(sum(log(theta))); % Prior theta term
+    theta_term  = theta_term + sum(sum(prod_term)); 
 end
 
+Q = pi_term + A_term + theta_term;
 end

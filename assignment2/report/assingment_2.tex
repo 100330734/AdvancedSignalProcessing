@@ -2,10 +2,10 @@
 % This is all preamble stuff that you don't have to worry about.
 % Head down to where it says "Start here"
 % --------------------------------------------------------------
- 
+
 \documentclass[12pt]{article}
- 
-\usepackage[spanish]{babel}
+
+
 \usepackage[utf8]{inputenc}
 \usepackage{intmacros}
 \usepackage[margin=1in]{geometry} 
@@ -18,142 +18,261 @@
 
 \usepackage[]{hyperref}
 \hypersetup{
-	colorlinks   = true, %Colours links instead of ugly boxes
+	colorlinks   = false, %Colours links instead of ugly boxes
 	urlcolor     = blue, %Colour for external hyperlinks
-	linkcolor    = blue, %Colour of internal links
+	linkcolor    = red, %Colour of internal links
 	citecolor   = green %Colour of citations
 }
 \addbibresource{bibliography.bib}
 
 
 \newenvironment{theorem}[2][Theorem]{\begin{trivlist}
-\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+		\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
 \newenvironment{lemma}[2][Lemma]{\begin{trivlist}
-\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+		\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
 \newenvironment{exercise}[2][Exercise]{\begin{trivlist}
-\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+		\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
 \newenvironment{reflection}[2][Reflection]{\begin{trivlist}
-\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+		\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
 \newenvironment{proposition}[2][Proposition]{\begin{trivlist}
-\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+		\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
 \newenvironment{corollary}[2][Corollary]{\begin{trivlist}
-\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
- 
- 
+		\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
 % OPERATORS
+\newcommand{\indicator}{\mathbb{I}} 
+\newcommand{\bs}{\boldsymbol}
+
 
 \begin{document}
- 
+	
 % --------------------------------------------------------------
 %                         Start here
 % --------------------------------------------------------------
- 
+
 %\renewcommand{\qedsymbol}{\filledbox}
- 
-\title{Assignment 2: HMM for Categorical Data Sequences}
-\author{Daniel Barrejón Moreno} 
+
+\title{Assignment 2: HMM for Categorical Data Sequences}%
+\author{Daniel Barrejón Moreno} %if necessary, replace with your course title
+\date{\today}
 \maketitle
- 
-\section{Complete data log likelihood}
 
-\noindent We have the following marginal likelihood
+	
+\section{Expression for the complete data log-likehood for the N sequences}
+According to this expression for the complete data log-likelihood
 \begin{equation}
-p \left( \mathbf { y } _ { t } | s _ { t } = k , \mathbf { B } \right) = \prod _ { j = 1 } ^ { D _ { t } } \Cat \left( y _ { t j } | \mathbf { b } _ { k } \right).
+\label{ll1}
+l_{c}\left(\boldsymbol\theta\right) = \log p ( S , Y | \boldsymbol\theta ) = \log \prod _ { n = 1 } ^ { N } \left( p \left( s _ { 1 } ^ { n } | \boldsymbol\pi \right) \prod _ { t = 2 } ^ { T _ { n } } p \left( s _ { t } ^ { n } | s _ { t - 1 } ^ { n } , \mathbf { A } \right) \right) \left( \prod _ { t = 1 } ^ { T _ { n } } p \left( \mathbf { y } _ { t } ^ { n } | s _ { t } ^ { n } , \mathbf { B } \right) \right)
 \end{equation}
+where log operator is the Naperian logarithm, $S$ represents the hidden states of the model, $Y$ is the observed continuous sequence, $\mathbf { A }$ stands for the state transition probabilities,$B$ the observatoin emission probabilites and $\boldsymbol\pi$ is the initial state probability distribution. \\
 
-\noindent We need to find the complete data log likelihood for the joint distribution of $S$ and $Y$ for $N$ sequences. First of all, the likelihood will look as follows
+\noindent The parameters of the model are
 \begin{equation}
-p(S ,Y|\bstheta ) = p(Y|S,\bstheta)p(S|\bstheta)  = \prod _ { n = 1 } ^ { N } \left( p \left( s _ { 1 } ^ { n }|\bspi \right) \prod _ { t = 2 } ^ { T _ { n } } p \left( s _ { t } ^ { n } | s _ { t - 1 } ^ { n } | \A \right) \right) \left( \prod _ { t = 1 } ^ { T _ { n } } p \left( \mathbf { y } _ { t } ^ { n } | s _ { t } ^ { n } | \B\right) \right),
+\boldsymbol\theta = \{ \mathbf { A } , \mathbf { B } , \boldsymbol\pi \}.
 \end{equation}
-and taking logarithms we get,
+Equation \eqref{ll1} is composed by three main terms: the $\boldsymbol\pi$, $\mathbf { A }$ and $\mathbf { B } $ ones which can be rewritten as
 \begin{align}
-\log p ( S , Y | \boldsymbol { \theta } ) & = \log \prod _ { n = 1 } ^ { N } \left( p \left( s _ { 1 } ^ { n } | \boldsymbol { \pi } \right) \prod _ { t = 2 } ^ { T _ { n } } p \left( s _ { t } ^ { n } | s _ { t - 1 } ^ { n } , \mathbf { A } \right) \right) \left( \prod _ { t = 1 } ^ { T _ { n } } p \left( \mathbf { y } _ { t } ^ { n } | s _ { t } ^ { n } , \mathbf { B } \right) \right)\\
-& = 
+p \left( s _ { 1 } ^ { n } | \boldsymbol\pi \right) &= \prod\limits_{k=1}^{K}\pi_{k}^{\indicator \lbrace s_{1}^{n}=k|Y,\boldsymbol\theta\rbrace},\\
+p \left( s _ { t } ^ { n } | s _ { t - 1 } ^ { n } , \mathbf { A } \right) &= \prod\limits_{k=1}^{K} \prod\limits_{k'=1}^{K}a_{k,k'}^{\indicator \lbrace s_{t-1}^{n}=k,s_{t}^{n}=k'|Y,\boldsymbol\theta\rbrace},\\
+p \left( \mathbf { y } _ { t } ^ { n } | s _ { t } ^ { n } , \mathbf { B } \right) &= \prod\limits_{k=1}^{K} p \left( \mathbf { y } _ { t } ^ { n } | \boldsymbol b_{k} \right) = \prod\limits_{k=1}^{K} p \left( \mathbf { y } _ { t } ^ { n } | \boldsymbol\theta_{k} \right) \label{p3LL}.
 \end{align}
+In this case, $\indicator$ represents an indicator function, $k = \lbrace{1,...,K}\rbrace$ the current latent state of the model, $a_{k,k'}$ the $k$th row and $k'$th column element of the forementioned matrix $\mathbf { A }$, $t = \lbrace{1,...,T_{n}}\rbrace$ the position of the state in sequence $n$. Please notice that now, $\mathbf{b}_{k}$ (that belonged to $\mathbf{B}$ becomes $\boldsymbol\theta_{k}$, which denotes the hyperparameters of the categorical distribution that the data follow.\\
 
-\clearpage
-
-
-
- 
-\textbf{ Mixture model of categorical} \begin{equation}
-     p(\x|\bstheta) = \sum_{k=1}^{K}\pi_k\prod_{j=1}^{D}\Cat(x_j|\bstheta_k)
- \end{equation}
-
-\textbf{Incomplete data likelihood}
+\noindent Since our data follow a categorical distribution, equation (\ref{p3LL}) can be expressed as
 \begin{equation}
-    p(\X,\bstheta) = \prod_{i=1}^{N}\sum_{k=1}^{K}\pi_k\prod_{j=1}^{D}\Cat(x_{ij}|\bstheta)
+p \left( \mathbf { y } _ { t } ^ { n } | \boldsymbol\theta_{k} \right) = \prod\limits_{j=1}^{Dt} \text{Cat}(y_{j,t}|\boldsymbol\theta_{k}).
 \end{equation}
-
-\textbf{PDF x given z}
+With a further development we can get
 \begin{equation}
-p(\x_i|z_i,\bstheta) = \prod_{k=1}^{K}\prod_{j=1}^{D}\Cat(x_{ij}|\bstheta_k)^{\Ind (z_i=k)}
+p \left( \mathbf { y } _ { t } ^ { n } | \boldsymbol\theta_{k} \right) = \prod\limits_{j=1}^{Dt} \text{Cat}(y_{j,t}|\boldsymbol\theta_{k}) = \prod\limits_{m=1}^{I}\prod\limits_{j=1}^{Dt}\theta_{k,m}^{\indicator\lbrace{y_{j,t}^{n}=m}\rbrace} = \prod\limits_{m=1}^{I}\theta_{k,m}^{\sum\limits_{j=1}^{Dt}\indicator\lbrace{y_{j,t}^{n}=m}\rbrace} = \prod\limits_{m=1}^{I}\theta_{k,m}^{\mu^{n}_{t,m}},
 \end{equation}
-
-\textbf{Marginal for z}
+being $\mu^{n}_{t,m}$
 \begin{equation}
-    p(z_i|\bstheta) = \prod_{k=1}^{K}\pi_k^{\Ind (z_i=k)}
+\mu^{n}_{t,m} = \sum\limits_{j=1}^{Dt}\indicator\lbrace{y_{j,t}^{n}=m}\rbrace.
 \end{equation}
-
-\textbf{Marginal for x}
+So the complete data log-likelihood is written in this way
+\begin{equation}
+\begin{split}
+l_{c}\left(\boldsymbol\theta\right) &= \sum\limits_{n=1}^{N}\sum\limits_{k=1}^{K}\indicator \lbrace s_{1}^{n}=k|Y,\boldsymbol\theta\rbrace \log(\pi_{k}) + \\
+&+ \sum\limits_{n=1}^{N}\sum\limits_{k=1}^{K}\sum\limits_{k'=1}^{K}\sum\limits_{t=1}^{T_{n}}\indicator \lbrace s_{t-1}^{n}=k,s_{t}^{n}=k'|Y,\boldsymbol\theta\rbrace \log(a_{k,k'}) + \\
+&+ \sum\limits_{n=1}^{N}\sum\limits_{t=1}^{T_{n}}  \indicator \lbrace s_{t}^{n}=k|Y,\boldsymbol\theta\rbrace    \sum\limits_{m=1}^{I}\mu^{n}_{t,m} \log(\theta_{k,m}).
+\end{split}
+\end{equation}
+\section{Expression for the expected complete data log likelihood}
+The expected complete data log-likelihood has the following form
+\begin{equation}
+Q \left( \boldsymbol { \theta } , \boldsymbol { \theta } ^ { t - 1 } \right) = E \left\{ l _ { c } ( \boldsymbol { \theta } ) | \mathcal { D } , \boldsymbol { \theta } ^ { t - 1 } \right\}
+\end{equation}
+As in the previous section, and considering the nature of $l_{c}$ and its three main components, this expectation calculation can be divided in three.
 \begin{align}
-    p(\x_i) & = \prod_{j=1}^D\Cat(x_{ij}|\bstheta) = \prod_{j=1}^D\prod_{m=1}^I\theta_m^{\Ind(x_{i,j}=m)} = \prod_{m=1}^I\prod_{j=1}^D\theta_m^{\Ind(x_{i,j}=m)} \\
-    & = \prod_{m=1}^I\theta_m^{\sum_{j=1}^D {\Ind(x_{i,j}=m)}} = \prod_{m=1}^I \theta_m^{\mu_{i,m}},
+& \expectation \left( \sum _ { n = 1 } ^ { N } \indicator \left( s _ { 1 } ^ { n } = k | Y , \theta \right) \right) = \sum _ { n = 1 } ^ { N } \gamma _ { n , 1 } ( k ), \\
+& \expectation \left( \sum _ { n = 1 } ^ { N } \sum _ { t = 2 } ^ { T _ { n } } \indicator \left( s _ { t - 1 } ^ { n } = k , s _ { t } ^ { n } = k' | Y , \theta \right) \right) = \sum _ { n = 1 } ^ { N } \sum _ { t = 2 } ^ { T _ { n } } \xi _ { n , t } ( k , k' ), \\
+& \expectation \left( \sum _ { n = 1 } ^ { N } \sum _ { t = 1 } ^ { T _ { n } } \indicator \left( s _ { t } ^ { n } = k | Y , \theta \right) \right) = \sum _ { n = 1 } ^ { N } \sum _ { t = 1 } ^ { T _ { n } } \gamma _ { n , t } ( k ).
 \end{align}
-where
+Where 
 \begin{equation}
-    \mu_{i,m} = \sum_{j=1}^D {\Ind(x_{i,j}=m)}
+\sum _ { k = 1 } ^ { K } \gamma _ { n , t } ( k ) = 1.
 \end{equation}
-
-\section{Log-likelihood $l_c$}
-\textbf{Complete data log-likelihood}
+\noindent And being $\xi _ { n,t } ( k , k' )$ 
+\begin{equation}
+\xi _ { n,t } ( k , k' ) = \alpha _ { t -1}^{n} ( k ) a _ { k,k' } \prod\limits_{m=1}^{I} \theta_{k,m}^{\mu^{n}_{t,m}} \beta _ { t  }^{n} ( k' ).
+\end{equation}
+The terms $\alpha$ and $\beta$ are computed by means of the forward-backward algorithm as follows
 \begin{align}
-    l_c(\bstheta) & = \ln p(\mathcal{D},\mathcal{Z}|\bstheta) = \sum_{i=1}^{N}\log (p(\x_i|\z_i,\bstheta) p(\z_i|\bstheta)) =  \sum_{i=1}^{N}\log \left(\prod_{k=1}^K(\pi_k\prod_{j=1}^D \Cat(x_{ij}|\bstheta_k))^{\Ind (z_i=k)}\right)\\
-    & = \sum_{i=1}^N\sum_{k=1}^K\Ind (z_i=k) \log\left( \pi_k\prod_{j=1}^D\Cat(x_{ij}|\bstheta_k)\right) \\
-    & =  \sum_{i=1}^N\sum_{k=1}^K\Ind (z_i=k) \log \pi_k + \sum_{i=1}^N\sum_{k=1}^K\Ind (z_i=k) \log \prod_{m=1}^I \theta_{k,m}^{\mu_{i,m}}\\
-    & = \sum_{i=1}^N\sum_{k=1}^K\Ind (z_i=k) \log \pi_k + \sum_{i=1}^N\sum_{k=1}^K\Ind (z_i=k) \sum_{m=1}^I \mu_{i,m}\log \theta_{k,m}
-    \end{align}
-    
-   
-\section{3. E-step: Q function}
-\textbf{Expectation Step: xn}\\
-
-Taking the expectation with respect to the latent variables $z$ we get the following expected complete data log-likelihood.
-
-\begin{align}
-    Q(\bstheta^t, \bstheta^{t-1}) & = \expectation_Z\{l_c(\bstheta|\mathcal{D},\bstheta^{t-1})\} = \expectation_Z\{\sum_{i=1}^N\sum_{k=1}^K\Ind (z_i=k) \log \pi_k + \sum_{i=1}^N\sum_{k=1}^K\Ind (z_i=k) \sum_{m=1}^I \mu_{i,m}\log \theta_{k,m}\}\\
-    & = \sum_{i=1}^N\sum_{k=1}^K\expectation_Z\{\Ind (z_i=k)\} \log \pi_k + \sum_{i=1}^N\sum_{k=1}^K\expectation_Z\{\Ind(z_i=k)\} \sum_{m=1}^I \mu_{i,m}\log \theta_{k,m}\\
-    & = \sum_{i=1}^N\sum_{k=1}^K r_{i,k}\log \pi_k + \sum_{i=1}^N\sum_{k=1}^K r_{i,k}\sum_{m=1}^I \mu_{i,m}\log \theta_{k,m} ,
+&\alpha _ { 1 }^{n} ( k ) = \pi _ { k } \prod\limits_{m=1}^{I}\theta_{k,m}^{\mu^{n}_{1,m}}, \\
+&\alpha _ { t }^{n} ( k ) = \left( \sum _ { k' = 1 } ^ { K } \alpha _ { t - 1 }^{n} ( k' ) a _ { k',k } \right) \prod\limits_{m=1}^{I}\theta_{k,m}^{\mu^{n}_{t,m}}, \\
+&\beta _ { T_{n} }^{n} ( k ) = 1, \\
+& \beta _ { t }^{n} ( k ) = \sum _ {k' = 1 } ^ { K } a _ { k,k'}  \prod\limits_{m=1}^{I}\theta_{k',m}^{\mu^{n}_{t+1,m}}  \beta _ { t + 1 }^{n} ( k' ).
 \end{align}
-where 
+So the complete expression for $Q \left( \boldsymbol { \theta } , \boldsymbol { \theta } ^ { t - 1 } \right)$ is now
+\begin{equation}
+\begin{split}
+Q \left( \boldsymbol { \theta } , \boldsymbol { \theta } ^ { t - 1 } \right) &= \sum\limits_{k=1}^{K}\sum _ { n = 1 } ^ { N } \gamma _ { n , 1 } ( k ) \log(\pi_{k}) + \\
+&+ \sum\limits_{k=1}^{K}\sum\limits_{k'=1}^{K}\sum _ { n = 1 } ^ { N } \sum _ { t = 2 } ^ { T _ { n } } \xi _ { n , t } ( k , k' ) \log(a_{k,k'}) + \\
+&+ \sum\limits_{k=1}^{K}\sum\limits_{m=1}^{I}\sum _ { n = 1 } ^ { N } \sum _ { t = 1 } ^ { T _ { n } } \gamma _ { n , t } ( k )\mu^{n}_{t,m} \log(\theta_{k,m}).
+\end{split}
+\end{equation}
+\section{Maximum Likelihood estimation of the parameters of the model}
+There are three parameters for the model, which are $\mathbf{A}$, $\bs\theta$ and $\bs\pi$, and they are computed by means of Lagrange multipliers.
+\subsection{ML estimation of $\pi_{k}$}
+In order to compute $\pi_{k}$, we first need to take into account the following restrictions
 \begin{align}
-	r_{i,k} &= \expectation_Z\{ \Ind(z_i=k) \} = p(z_i = k|\x_i,\bstheta^{t-1}) = \frac{p(z_i=k,\x_i|\bstheta^{t-1})}{p(\x_i|\bstheta^{t-1})} = \frac{p(z_i=k,\x_i|\bstheta^{t-1})}{\sum_{k\prime}^{K}p(z_i=k\prime,\x_i|\bstheta^{t-1})}\\
-	& = \frac{\pi_k p(x_i|\bstheta_k)}{\sum_{k\prime}^K \pi_{k\prime} p(x_i|\bstheta_{k\prime})} =
-	\frac{\pi_k\prod_{j=1}^{D}\Cat(x_{i,j}|\bstheta_k)}{\sum_{k\prime}^{K} \pi_{k\prime} \prod_{j=1}^{D}\Cat(x_{i,j}|\bstheta_k\prime)}
+& 0 \leq \pi_{k} \leq 1 \\
+& \sum\limits_{k = 1}^{K} \pi_{k} = 1.
 \end{align}
-
-
-\section{M-step: Maximization}
-
-\subsection{Maximization of $\pi_k$}
-
-
+Now, let us define the lagrangian as
 \begin{equation}
-	\hat{\pi_k} = \frac{\sum_{i=1}^N r_{i,k}}{N} = \frac{N_k}{N},
+\label{lagrange_pik}
+L\left( Q(\pi_{k}),\lambda \right) = Q(\pi_{k}) + \lambda \left( \sum \limits_{k=1}^{K} \pi_{k} - 1 \right),
 \end{equation}
-where
+which will be optimized in this way
 \begin{equation}
-	N_k = \sum_{i=1}^N r_{i,k}
+\label{minmax_lagrange_pik}
+\min_{\substack{\lambda}} \max_{\substack{\pi_{k}}} \lbrace L\left( Q(\pi_{k}),\lambda \right) \rbrace.
 \end{equation}
-
-\subsection{Maximization of $\bstheta_k$}
-
+By first taking the derivative with respect to $\pi_{k}$ and equating it to 0
 \begin{equation}
-	\hat{\bstheta}_{k,m} = \frac{\sum_{i=1}^N r_{i,k}\mu_{i,m}}{\sum_{m=1}^I \sum_{i=1}^N r_{i,k} \mu_{i,m}}
+\label{deriv_pik}
+\begin{split}
+& \dfrac{\partial L}{\partial \pi_{k}} = 0 = \sum \limits_{n=1}^{N} \dfrac{\gamma_{n,1}(k)}{\pi_{k}} - \lambda, \\
+& \pi_{k} = \dfrac{1}{\lambda} \sum \limits_{n=1}^{N} \gamma_{n,1}(k).
+\end{split}
 \end{equation}
-
-
-
+And later with respect to $\lambda$
+\begin{equation}
+\begin{split}
+& \dfrac{\partial L}{\partial \lambda} = 0 = \sum \limits_{k=1}^{K} \pi_{k} - 1,\\
+& \sum \limits_{k=1}^{K} \pi_{k} = 1.\\
+\end{split}
+\end{equation}
+Taking into account the previous equation, if in both sides of \eqref{deriv_pik} summatories all over $K$ are taken, then the value of $\lambda$ can be obtained
+\begin{equation}
+\begin{split}
+& \sum \limits_{k=1}^{K}\pi_{k} = \sum \limits_{k=1}^{K} \dfrac{1}{\lambda} \sum \limits_{n=1}^{N} \gamma_{n,1}(k)\\
+& 1 = \dfrac{1}{\lambda} \sum \limits_{n=1}^{N}\sum \limits_{k=1}^{K}\gamma_{n,1}(k).\\
+\end{split}
+\end{equation}
+Now, considering the previously imposed restrictions and recalling that
+\begin{equation}
+\sum _ { k = 1 } ^ { K } \gamma _ { n , t } ( k ) = 1,
+\end{equation}
+the value of $\lambda$ is
+\begin{equation}
+\begin{split}
+& 1 = \dfrac{1}{\lambda} \sum \limits_{n=1}^{N}1.\\
+& \lambda = N.\\
+\end{split}
+\end{equation}
+And with that value of $\lambda$ the estimated value of $\pi_{k}$ is
+\begin{equation}
+\widehat{\pi}_{k} = \dfrac{1}{N} \sum \limits_{n=1}^{N} \gamma_{n,1}(k).
+\end{equation}
+\subsection{ML estimation of $\theta_{k,m}$}
+Now, the parameter to be estimated is $\theta_{k,m}$ and the constraint is now
+\begin{equation}
+\label{constraint_thetakm}
+\sum \limits_{m=1}^{I} \theta_{k,m} = 1.
+\end{equation}
+Being the whole expression
+\begin{equation}
+\label{lagrange_thetakm}
+L\left( Q(\theta_{k,m}),\lambda \right) = Q(\theta_{k,m}) + \lambda \left( \sum \limits_{m=1}^{I} \theta_{k,m} - 1 \right),
+\end{equation}
+which will be optimized in this way
+\begin{equation}
+\label{minmax_lagrange_thetakm}
+\min_{\substack{\lambda}} \max_{\substack{\theta_{k,m}}} \lbrace L\left( Q(\theta_{k,m}),\lambda \right) \rbrace.
+\end{equation}
+By first taking the derivative with respect to $\theta_{k,m}$ and equating it to 0
+\begin{equation}
+\label{deriv_thetakm}
+\begin{split}
+& \dfrac{\partial L}{\partial \theta_{k,m}} = 0 = \sum \limits_{n=1}^{N}\sum _ { t = 1 } ^ { T _ { n } } \dfrac{\gamma_{n,t}(k)\mu_{t,m}^{n}}{\theta_{k,m}} - \lambda, \\
+& \theta_{k,m} = \dfrac{1}{\lambda} \sum \limits_{n=1}^{N} \sum _ { t = 1 } ^ { T _ { n } }\gamma_{n,t}(k)\mu_{t,m}^{n}.
+\end{split}
+\end{equation}
+And later with respect to $\lambda$
+\begin{equation}
+\begin{split}
+& \dfrac{\partial L}{\partial \lambda} = 0 = \sum \limits_{m=1}^{I} \theta_{k,m} - 1,\\
+& \sum \limits_{m=1}^{I} \theta_{k,m} = 1.\\
+\end{split}
+\end{equation}
+Taking into account the previous equation, if in both sides of \eqref{deriv_thetakm} summatories all over $I$ are taken, then the value of $\lambda$ can be obtained
+\begin{equation}
+\begin{split}
+& \sum \limits_{m=1}^{I}\theta_{k,m} = \sum \limits_{m=1}^{I} \dfrac{1}{\lambda} \sum \limits_{n=1}^{N}\sum _ { t = 1 } ^ { T _ { n } } \gamma_{n,t}(k)\mu_{t,m}^{n}\\
+& 1 = \dfrac{1}{\lambda} \sum \limits_{n=1}^{N}\sum _ { t = 1 } ^ { T _ { n } }\sum \limits_{m=1}^{I}\gamma_{n,t}(k)\mu_{t,m}^{n},\\
+& \lambda = \sum \limits_{n=1}^{N}\sum \limits_{ t = 1 } ^ { T _ { n }}\sum \limits_{m=1}^{I}\gamma_{n,t}(k)\mu_{t,m}^{n}.\\
+\end{split}
+\end{equation}
+And with that value of $\lambda$ the estimated value of $\theta_{k,m}$ is
+\begin{equation}
+\widehat{\theta}_{k,m} = \dfrac{\sum \limits_{n=1}^{N} \sum \limits_ { t = 1 } ^ { T _ { n } }\gamma_{n,t}(k)\mu_{t,m}^{n}}{\sum \limits_{n=1}^{N}\sum \limits_ { t = 1 } ^ { T _ { n } }\sum \limits_{m=1}^{I}\gamma_{n,t}(k)\mu_{t,m}^{n}}.
+\end{equation}
+\subsection{ML estimation of $a_{k,k'}$}
+At last, the parameter to be estimated is $a_{k,k'}$ and the constraint is now
+\begin{equation}
+\label{constraint_akk}
+\sum \limits_{k'=1}^{K} a_{k,k'} = 1.
+\end{equation}
+Being the whole expression
+\begin{equation}
+\label{lagrange_akk}
+L\left( Q(a_{k,k'}),\lambda \right) = Q(a_{k,k'}) + \lambda \left( \sum \limits_{k'=1}^{K} a_{k,k'} - 1 \right),
+\end{equation}
+which will be optimized in this way
+\begin{equation}
+\label{minmax_lagrange_akk}
+\min_{\substack{\lambda}} \max_{\substack{a_{k,k'}}} \lbrace L\left( Q(a_{k,k'}),\lambda \right) \rbrace.
+\end{equation}
+By first taking the derivative with respect to $a_{k,k'}$ and equating it to 0
+\begin{equation}
+\label{deriv_akk}
+\begin{split}
+& \dfrac{\partial L}{\partial a_{k,k'}} = 0 = \sum \limits_{n=1}^{N}\sum _ { t = 2 } ^ { T _ { n } } \dfrac{\xi_{n,t}(kk')}{a_{k,k'}} - \lambda, \\
+& a_{k,k'} = \dfrac{1}{\lambda} \sum \limits_{n=1}^{N} \sum _ { t = 2 } ^ { T _ { n } }\xi_{n,t}(kk').
+\end{split}
+\end{equation}
+And later with respect to $\lambda$
+\begin{equation}
+\begin{split}
+& \dfrac{\partial L}{\partial \lambda} = 0 = \sum \limits_{m=1}^{I} a_{k,k'} - 1,\\
+& \sum \limits_{k'=1}^{K} a_{k,k'} = 1.\\
+\end{split}
+\end{equation}
+Taking into account the previous equation, if in both sides of \eqref{deriv_akk} summatories all over $I$ are taken, then the value of $\lambda$ can be obtained
+\begin{equation}
+\begin{split}
+& \sum \limits_{k'=1}^{K}a_{k,k'} = \sum \limits_{k'=1}^{K} \dfrac{1}{\lambda} \sum \limits_{n=1}^{N}\sum _ { t = 1 } ^ { T _ { n } } \xi_{n,t}(k,k')\\
+& 1 = \dfrac{1}{\lambda} \sum \limits_{n=1}^{N}\sum _ { t = 1 } ^ { T _ { n } }\sum \limits_{k'=1}^{K}\xi_{n,t}(k,k'),\\
+& \lambda = \sum \limits_{n=1}^{N}\sum \limits_{ t = 1 } ^ { T _ { n }}\sum \limits_{k'=1}^{K}\xi_{n,t}(k,k').\\
+\end{split}
+\end{equation}
+And with that value of $\lambda$ the estimated value of $a_{k,k'}$ is
+\begin{equation}
+\widehat{a}_{k,k'} = \dfrac{\sum \limits_{n=1}^{N} \sum \limits_ { t = 1 } ^ { T _ { n } }\xi_{n,t}(k,k')}{\sum \limits_{n=1}^{N}\sum \limits_ { t = 1 } ^ { T _ { n } }\sum \limits_{k'=1}^{K}\xi_{n,t}(k,k')}.
+\end{equation}
 
 \nocite{*}
 \printbibliography

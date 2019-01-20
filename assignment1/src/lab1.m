@@ -2,7 +2,7 @@
 
 % data processing
 load('LDAdata.mat');
-ex
+
 
 %% SETUP
 K = 5;
