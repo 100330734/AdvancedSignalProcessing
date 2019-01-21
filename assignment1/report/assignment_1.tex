@@ -273,13 +273,11 @@ where $r_{i,k}$ remains the same. Taking logarithm on the probability of the pri
 & \log p(\bstheta_{k}|\bsalpha) = \log \left(\dfrac{1}{\text{B}(\bsalpha)} \prod \limits_{m=1}^{I} \theta_{k,m}^{\alpha_{m}-1}\right) = \log \dfrac{1}{\text{B}(\bsalpha)} +  \sum \limits_{m=1}^{I}(\alpha_{m}-1)\log (\theta_{k,m}).
 \end{align}
 \noindent Using these results in Equation \ref{eq:Q_map_deriv} we get the expression for $Q(\bstheta,\bstheta^{t-1})$ using MAP estimation
-\begin{equation}\label{eq:Q_map}
-\begin{split}
-Q(\bstheta^t, \bstheta^{t-1}) = & \sum_{i=1}^N\sum_{k=1}^K r_{i,k}\log \pi_k + \sum_{i=1}^N\sum_{k=1}^K r_{i,k}\sum_{m=1}^I \mu_{i,m}\log \theta_{k,m} \\
+\begin{align}\label{eq:Q_map}
+Q(\bstheta^t, \bstheta^{t-1})& = \sum_{i=1}^N\sum_{k=1}^K r_{i,k}\log \pi_k + \sum_{i=1}^N\sum_{k=1}^K r_{i,k}\sum_{m=1}^I \mu_{i,m}\log \theta_{k,m} \\
 & + \log \left(\dfrac{1}{\text{B}(\bsbeta)}\right) + \sum \limits_{k=1}^{K}(\beta_{k}-1)\text{log}(\pi_{k})\\
- & + \sum\limits_{k=1}^{K} \log \dfrac{1}{\text{B}(\bsalpha)} +  \sum\limits_{k=1}^{K}\sum \limits_{m=1}^{I}(\alpha_{m}-1)\log (\theta_{k,m}).
-\end{split}
-\end{equation}
+& + \sum\limits_{k=1}^{K} \log \dfrac{1}{\text{B}(\bsalpha)} +  \sum\limits_{k=1}^{K}\sum \limits_{m=1}^{I}(\alpha_{m}-1)\log (\theta_{k,m}).
+\end{align}
 Notice that $\text{B}(\bsalpha)$ can be decomposed as $$
 \mathrm { B } ( \boldsymbol { \alpha } ) = \frac { \prod _ { i = 1 } ^ { K } \Gamma \left( \alpha _ { i } \right) } { \Gamma \left( \sum _ { i = 1 } ^ { K } \alpha _ { i } \right) },
 $$
@@ -316,7 +314,7 @@ we get the value of $\lambda$
 \lambda = N + \sum \limits_{k=1}^{K} \beta_{k} - K.
 \end{equation}
 Once $\lambda$ is known the estimated value of $\pi_{k}$ is as follows
-\begin{equation}
+\begin{equation}\label{eq:pi_map}
 \hat{\pi}_{k} = \dfrac{\sum \limits_{i=1}^{N} r_{i,k} + \beta_{k} - 1}{N + \sum \limits_{k=1}^{K} \beta_{k} - K}.
 \end{equation}
 
@@ -344,7 +342,7 @@ Summing at both sides over $I$ Equation \ref{eq:deriv_thetakm_MAP} we can obtain
 & \lambda = \sum \limits_{m=1}^{I} \sum \limits_{i=1}^{N} r_{i,k}\mu_{i,m} + \sum \limits_{m=1}^{I} \alpha_m - I.
 \end{align}
 And with that value of $\lambda$ the estimated value of $\theta_{k,m}$ is
-\begin{equation}
+\begin{equation}\label{eq:theta_map}
 \hat{\theta}_{k,m} = \dfrac{\sum \limits_{i=1}^{N} r_{i,k}\mu_{im} +\alpha_m - 1}{\sum \limits_{m=1}^{I} \sum \limits_{i=1}^{N} r_{i,k}\mu_{i,m} + \sum \limits_{m=1}^{I} \alpha_m - I}.
 \end{equation}
 
@@ -399,7 +397,7 @@ In Figure \ref{fig:R_ML} it can bee seen the probabilities for each document for
 \subsection{MAP Experiments}
 
 From Figure \ref{fig:R_ML} it could be seen that with the ML inference approach it is not possible to achieve the desired result of segments of documents with the same topic. To obtain this we need to incorporate some prior information about how we believe the topics and the categories of each document are distributed. To do so, we show three different experiments. For all of them the hyperparameter $\bsbeta$ has been set as $\bsbeta = 2\I_{Kx1}$ and $\bsalpha$ was set to 
-$\bsalpha = 1.1\I_{Ix1}$, $\bsalpha = 5\I_{Ix1}$ and finally $\bsalpha = 2\I_{Ix1}$.
+$\bsalpha = 1.1\I_{Ix1}$, $\bsalpha = 5\I_{Ix1}$ and finally $\bsalpha = 2\I_{Ix1}$. For smaller values of $\bsalpha$ and $\bsbeta$ in the order of 0.5 the algorithm breaks since the results for Equations \ref{eq:theta_map} and \ref{eq:pi_map} are close to 0 and therefore the evaluation of the posterior in Equation \ref{eq:Q_map} returns complex values.
 
 \subsubsection{Experiment 1: $\bsalpha = 1.1\I_{Ix1}$} 
 
@@ -551,6 +549,8 @@ In order to gain more visual intuition of the solution, we show two Wordclouds g
 
 
 \section{Conclusions}
+
+Throughout this project we have studied the maximum likelihood and the maximum a posterior approach for the Expectation Maximization algorithm applied to a collection of documents following a categorical distribution. It has been shown that using a model in which we know some prior information can achieve better performance characteristics and that the number of mixtures is an important hyperparameter that must be selected according to some criterion. In our case, given the big number of parameters of the model and the small change in the likelihoods for different values of $K$ we  could not use model information criteria and therefore we analyzed the corresponding outputs of the model.
 
 
 
