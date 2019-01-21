@@ -15,10 +15,12 @@
 \usepackage{xcolor}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{caption,subcaption}
+\captionsetup{labelsep = period} % Figure 2. Caption (rather than Figure 2: Caption)
 
 \usepackage[]{hyperref}
 \hypersetup{
-	colorlinks   = false, %Colours links instead of ugly boxes
+	colorlinks   = true, %Colours links instead of ugly boxes
 	urlcolor     = blue, %Colour for external hyperlinks
 	linkcolor    = red, %Colour of internal links
 	citecolor   = green %Colour of citations
@@ -156,7 +158,7 @@ The log-sum-exp trick will be applied on the last term from the above equation. 
 \end{equation}
 where $a = \max_{\substack{v}} g_v$ and $g_v$ is defined as 
 \begin{equation}
-g_v = \log \pi_{k\prime} \prod \limits_{m=1}^{I} \theta_{k\prime,m}^{\mu_{i,m}} = \log \pi_{k\prime} + \sum\limits_{m=1}^{I}\mu_{i,m} \log \theta_{k\prime,m}-
+g_v = \log \pi_{k\prime} \prod \limits_{m=1}^{I} \theta_{k\prime,m}^{\mu_{i,m}} = \log \pi_{k\prime} + \sum\limits_{m=1}^{I}\mu_{i,m} \log \theta_{k\prime,m}
 \end{equation}
 Once $\log r_{i,k}$ from Equation \ref{eq:log_rik} is known, we can find $r_{i,k}$ with an exponential. With this trick we do not loose any information by forcing values assigned to be 0 by the computer using clipping and we also increase computational speed. 
 
@@ -348,10 +350,211 @@ And with that value of $\lambda$ the estimated value of $\theta_{k,m}$ is
 
 \section{Experiments}
 
+The experiments have been divided into two sets: a set of experiment using ML estimation and another set using MAP estimation. For both sets of experiments the maximum number of iterations of the EM algorithm has been set to 100 iterations, the tolerance value has been set to $10^{-3}$ and a total of 5 different initializations have been done.
+
+In order to assess the performance of the algorithm, for the two approaches the log-likelihood will be shown, as well as the responsibilities for each document $r_{i,k}$. In order to obtain a better visualization of the results, a word cloud for the different found topic will be shown, so that the most common words for each topic can be displayed and they could be associated to a certain abstract theme. 
+
 \subsection{ML Experiments}
-INCLUDE FIGURES
+
+From the setup described above, it can be seen from Figure \ref{fig:Q_ML} that the log-likelihood is always increasing, and it actually converges reasonably fast. As it is known from the literature, the EM algorithm is quite likely to achieve a good solution rather fast, and then it tends to continue increasing in a plateau-fashion way.
+
+% Q ML Figures
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/ML/Q_ml_3_topics.jpg}
+		\caption{}
+		\label{fig:Q_ML_3}
+	\end{subfigure}
+	~	
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/ML/Q_ml_4_topics.jpg}
+		\caption{}
+		\label{fig:Q_ML_4}
+	\end{subfigure}
+	\caption{The log-likelihood is increasing for both $K=3$ in Figure \ref{fig:Q_ML_3} and for $K=4$ in Figure \ref{fig:Q_ML_4}}
+	\label{fig:Q_ML}
+\end{figure}
+In Figure \ref{fig:R_ML} it can bee seen the probabilities for each document for belonging to a certain topic. This result is obtained from the matrix of $r_{i,k}$. Although it is clear that each document is associated to a certain topic, still the results is quite scattered. With detailed observation it can be seen that there are some segments of following documents that might belong to a same topic, and hence we could differentiate different segments of documents.
+
+% R ML Figures
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/ML/R_ml_3_topics.jpg}
+		\caption{}
+		\label{fig:R_ML_3}
+	\end{subfigure}
+	~	
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/ML/R_ml_4_topics.jpg}
+		\caption{}
+		\label{fig:R_ML_4}
+	\end{subfigure}
+	\caption{Figures \ref{fig:R_ML_3} and \ref{fig:R_ML_4} show the probability of a certain document to be in a specific topic. As it can be seen, the result is quite scattered. This will be solved with the prior information in the MAP estimation.}
+	\label{fig:R_ML}
+\end{figure}
+
+
 \subsection{MAP Experiments}
-INCLUDE FIGURES
+
+From Figure \ref{fig:R_ML} it could be seen that with the ML inference approach it is not possible to achieve the desired result of segments of documents with the same topic. To obtain this we need to incorporate some prior information about how we believe the topics and the categories of each document are distributed. To do so, we show three different experiments. For all of them the hyperparameter $\bsbeta$ has been set as $\bsbeta = 2\I_{Kx1}$ and $\bsalpha$ was set to 
+$\bsalpha = 1.1\I_{Ix1}$, $\bsalpha = 5\I_{Ix1}$ and finally $\bsalpha = 2\I_{Ix1}$.
+
+\subsubsection{Experiment 1: $\bsalpha = 1.1\I_{Ix1}$} 
+
+In this case, choosing $\bsalpha = 1.1\I_{Ix1}$ is almost the same as choosing it uniformly, meaning that the prior probability for each different category of the categorical distribution is the same. As it was expected, the results is quite similar to the result obtained with the ML approach. The log-likelihood and the $r_{i,k}$ results are depicted in Figure \ref{fig:MAP_1.1} for value $K=3$.
+
+% ALPHA = 1.1
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/MAP/Q_map_3_topics_alpha11.jpg}
+		\caption{}
+		\label{fig:Q_MAP_1.1}
+	\end{subfigure}
+	~	
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/MAP/R_map_3_topics_alpha11.jpg}
+		\caption{}
+		\label{fig:R_MAP_1.1}
+	\end{subfigure}
+	\caption{The increase in the posterior in Figure  \ref{fig:Q_MAP_1.1} is not as fast as the ML approach. In Figure \ref{fig:R_MAP_1.1} it can bee seen that thanks to the prior information the different segments of documents are starting to appear.}
+	\label{fig:MAP_1.1}
+\end{figure}
+
+\subsubsection{Experiment 2: $\bsalpha = 5\I_{Ix1}$}
+
+Now, instead of using a rather uniform distribution for the hyperparameters of the prior we choose a more concentrated distribution by selecting  $\bsalpha = 5\I_{Ix1}$. However, the results are not good as it can be seen in Figure \ref{fig:MAP_5al}. Although the posterior is increasing quite smoothly, when we check the responsibilities $r_{i,k}$ it is clear that the algorithm is just assigning almost all the documents to one topic, and this is clearly not the case. 
+
+
+% ALPHA = 5
+\begin{figure}[h!]
+	\centering
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/MAP/Q_map_3_topics_alpha5.jpg}
+		\caption{}
+		\label{fig:Q_MAP_5al}
+	\end{subfigure}
+	~	
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/MAP/R_map_3_topics_alpha5.jpg}
+		\caption{}
+		\label{fig:R_MAP_5al}
+	\end{subfigure}
+	\caption{Posterior and responsibilities values for the document using $K = 3$ and $\bsalpha = 5\I_{Ix1}$.}
+	\label{fig:MAP_5al}
+\end{figure}
+
+\subsubsection{Experiment 3: $\bsalpha = 2\I_{Ix1}$}\label{experiment3}
+
+The best solution was actually found for values  $\bsalpha = 2\I_{Ix1}$. In this case the posterior does not increase as fast and smooth as it should, since sometimes some saddle points appear. However, when we check the responsibilities associated to each document, it can be seen that the algorithm is performing rather good. Besides, we will compare the results for different values of $K= 2,3,4,5$.
+
+In Figure \ref{fig:Q_MAP} the different increments of the posterior can be seen. As mentioned above, the increasing for the MAP approach is not as smooth as the ML approach since it depends on the choose of the hyperparameters of the prior. However, the results for the $r_{i,k}$ are quite reasonable, as it can be check in Figure \ref{fig:R_MAP}. For $K=2$ we start to see that the document collection is divided into different segments belonging to the same topic. However, two topics is too general. The best results is found for $K=3$ because we can differentiate three different segments of documents very clearly. For $K=4$ notice that the 4th topic could actually be merged with the first one to form the same topic as in the case with $K=3$. Finally, $K=5$ could be simplified again to three since the 4th topic could be merged with the first topic, and the third topic could be merged with the fifth topic to form $K=3$.
+
+
+% ALPHA = 2, Q
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/MAP/Q_map_2_topics.jpg}
+		\caption{}
+		\label{fig:Q_MAP_2}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/MAP/Q_map_3_topics.jpg}
+		\caption{}
+		\label{fig:Q_MAP_3}
+	\end{subfigure}
+	~	
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/MAP/Q_map_4_topics.jpg}
+		\caption{}
+		\label{fig:Q_MAP_4}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.4\textwidth}
+	\includegraphics[width=\textwidth]{images/MAP/Q_map_5_topics.jpg}
+		\caption{}
+		\label{fig:Q_MAP_5}
+	\end{subfigure}
+
+	\caption{Increase of the posterior for different values of K.}
+	\label{fig:Q_MAP}
+\end{figure}
+
+% ALPHA = 2, R
+\begin{figure}[hb]
+	\centering
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/MAP/R_map_2_topics.jpg}
+		\caption{}
+		\label{fig:R_MAP_2}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/MAP/R_map_3_topics.jpg}
+		\caption{}
+		\label{fig:R_MAP_3}
+	\end{subfigure}
+	~	
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/MAP/R_map_4_topics.jpg}
+		\caption{}
+		\label{fig:R_MAP_4}
+	\end{subfigure}
+	~
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/MAP/R_map_5_topics.jpg}
+		\caption{}
+		\label{fig:R_MAP_5}
+	\end{subfigure}
+	
+	\caption{Responsibilities for each document for different values of K.}
+	\label{fig:R_MAP}
+\end{figure}
+
+This has been our model selection criterion for selecting $K=3$. At the beginning we tried two Bayesian model criteria, the Bayesian Information Criterion (BIC) and the Akaike Information Criterion (AIC), which are defined with the following formulas
+
+\begin{align}
+\mathrm { AIC } & = 2 \text{dof}(\bstheta) - 2 \ln ( \hat { L } )\\
+\mathrm { BIC } & = \ln ( n )\text{dof}(\bstheta)- 2 \ln ( \hat { L } ), 
+\end{align}
+where $ ( \hat { L } )$ is the maximized value of the likelihood function and $\text{dof}(\bstheta)$ is the number of parameters or degrees of freedom of the model. In our case, the number of parameters of the model is 
+\begin{equation}
+\text{dof}(\bstheta) = K(I-1) + (K-1) = KI-1,
+\end{equation}
+given by $\bstheta$ and $\bspi$. Since the number of parameters increases with $K$, and the likelihood does not increase that much for different $K$, both criteria were always increasing, and therefore we did not use them to choose the optimal value of $K$.
+
+\section{WordCloud visualization}
+
+In order to gain more visual intuition of the solution, we show two Wordclouds generated for Experiment 3 \ref{experiment3} in Figure \ref{fig:clouds}. From the documents belonging to a same topic we obtain the most common word of that certain document so that for each topic we can create a Wordcloud with the most common words per topic. Whit this results it is rather visual to check if a topic is representing a field of research of the provided data.
+
+% WORDCLOUD
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/MAP/wordcloud_MAP3_topics.jpg}
+		\caption{}
+		\label{fig:cloud_3}
+	\end{subfigure}
+	~	
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/MAP/wordcloud_MAP4_topics.jpg}
+		\caption{}
+		\label{fig:cloud_4}
+	\end{subfigure}
+	\caption{The most common words in Topic 1 in Figure \ref{fig:cloud_3} are present in both Topic 1 and Topic 4 \ref{fig:cloud_4}. Therefore, Topic 1 and 4 could be merged together. Notice that each topic is related to a certain field of research from the abstracts.}
+	\label{fig:clouds}
+\end{figure}
+
+
+\section{Conclusions}
+
+
+
+\clearpage
 \nocite{*}
 \printbibliography
 
