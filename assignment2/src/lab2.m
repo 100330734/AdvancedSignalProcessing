@@ -5,7 +5,7 @@ load('LDAdata.mat');
 load('observed.mat');
 
 %% SETUP
-K = 2;
+K = 5;
 max_iter = 100;
 n_init = 5;
 epsilon = 1e-3;
@@ -35,58 +35,50 @@ fprintf('Done!')
 % TODO: BIC CRITERION FOR K SELECTION
 
 %% LISTS FOR DIFFERENT k
-% pi_opt_k = cell(1,K-1);
-% theta_opt_k = cell(1,K-1);
-% Q_opt_k = cell(1,K-1);
-% r_opt_k = cell(1,K-1);
-% labels_opt_k = cell(1,K-1);
-% ll_opt_k = zeros(1,K-1);
+model_opt_k = cell(1,K-1);
+ll_opt_k = zeros(1,K-1);
+
 % aic_list = zeros(1,K-1);
 % bic_list = zeros(1,K-1);
 
-% for k = 2:K
+for k = 2:K
     
-%     %% LISTS
-%     pi_cells = cell(1,n_init);
-%     theta_cells = cell(1,n_init);
-%     Q_cells = cell(1,n_init);
-%     r_cells = cell(1,n_init);
-%     labels_cells = cell(1,n_init);
-%     ll = zeros(1,n_init);
-%     
-for i = 1:1:n_init
+    %% LISTS
+    model_cells = cell(1,n_init);
+    ll = zeros(1,n_init);     
+    for i = 1:1:n_init
 
-    fprintf('------------------------------- \n');
-    fprintf('Initialization %d\n',i);
+        fprintf('------------------------------- \n');
+        fprintf('Initialization %d\n',i);
 
-    % initialization
-    [pi,theta,A] = initialization(K,I);
-    fprintf('Done! %d\n',i);
+        % initialization
+        [pi,theta,A] = initialization(k,I);
+        fprintf('Done! %d\n',i);
 
-    % EM
-    fprintf('------------------------------- \n');
-    fprintf('Running EM\n');
+        % EM
+        fprintf('------------------------------- \n');
+        fprintf('Running EM\n');
 
-    [Q_cells{i},pi_cells{i},theta_cells{i},r_cells{i},labels_cells{i}] = ...
-                              hmmEM(mu,pi,A,theta,epsilon,max_iter);
-    ll(i) = Q_cells{i}(end);
-end
+        model = hmmEM(mu,pi,A,theta,epsilon,max_iter);
+        ll(i) = model.Q(end);
+        model_cells{i} = model;
+    end
     
-%     % Obtain optimal for initializations 
-%     [ll_opt_k(k-1), idx_opt] = max(ll);
-%     pi_opt_k{k-1} = pi_cells{idx_opt};
-%     theta_opt_k{k-1}  = theta_cells{idx_opt};
-%     r_opt_k{k-1} = r_cells{idx_opt};
-%     labels_opt_k{k-1} = labels_cells{idx_opt};
-%     Q_opt_k{k-1} = Q_cells{idx_opt};
+    % Obtain optimal for initializations 
+    [ll_opt_k(k-1), idx_opt] = max(ll);
+    model_opt_k{k-1} = model_cells{idx_opt};
 %     [aic_list(k-1), bic_list(k-1)] = model_selection(ll_opt_k(k-1),k,I,N);
-%     
-%     % Plot Q
-%     fprintf('------------------------------- \n');
-%     fprintf('Plotting Q: \n');
-%     plot_Q(Q_opt_k{k-1},k,MAP)
-%     fprintf('Done!\n');
-%     
+    
+    opt_model_k = model_opt_k{k-1};
+    % Plot Q
+    fprintf('------------------------------- \n');
+    fprintf('Plotting Q: \n');
+    plot_Q(opt_model_k.Q,k)
+    fprintf('Done!\n');
+
+    % Compare FB Decoder and Viterbi decoder
+    [opt_model_k.states_FB, opt_model_k.states_Vit] = compareFBvsViterbi(opt_model_k);
+
 %     % Visualize R
 %     fprintf('------------------------------- \n');
 %     fprintf('Visualize R: \n');
@@ -106,7 +98,7 @@ end
 %     fprintf('Done!\n');     
 %     
 %     
-% end
+end
 
 close all;
 
