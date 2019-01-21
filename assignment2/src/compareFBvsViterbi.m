@@ -20,6 +20,7 @@ for i = 1 : N
     plot(states_Vit(i,:),'r--');  
     xlabel('Documents','Interpreter','latex')
     ylabel(s(i),sprintf('Sequence %d',i), 'Interpreter', 'latex')
+    yticks(1:K)
     hold off
 end
 
@@ -31,7 +32,7 @@ set(hL,'Position', newPosition);
 
 % legend('FB MAP decoder', 'Viterbi decoder','Location','southwestoutside');
 sgtitle('Comparison FB vs Viterbi decoder','Interpreter','latex')
-saveas(gcf,sprintf('./images/comparison_FB_Viterbi_K_%d.jpg',K))
+saveas(gcf,sprintf('./images/comparison_FB_Viterbi_K_%d.png',K))
 close 
 
 end

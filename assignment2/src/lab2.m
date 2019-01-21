@@ -1,4 +1,4 @@
- close all; clear all clc;
+  close all; clear all clc;
 
 % data processing
 load('LDAdata.mat');
@@ -9,20 +9,9 @@ K = 5;
 max_iter = 100;
 n_init = 5;
 epsilon = 1e-3;
-MAP = false; 
 debug = false;
 
-print_setup(MAP,max_iter,n_init,epsilon)
-
-%% Create Folder for ML and MAP Inference
-% 
-% if MAP
-%   img_folder = './images/MAP';
-%   if exist('./images/MAP','dir') ~= 7, mkdir(img_folder), end
-% else
-%   img_folder = './images/ML';
-%   if exist('./images/ML','dir') ~= 7, mkdir(img_folder), end  
-% end
+print_setup(max_iter,n_init,epsilon)
 
 
 %%  BAG OF WORDS - mu: (Term Frequency Matrix)
@@ -74,6 +63,7 @@ for k = 2:K
     fprintf('------------------------------- \n');
     fprintf('Plotting Q: \n');
     plot_Q(opt_model_k.Q,k)
+
     fprintf('Done!\n');
 
     % Compare FB Decoder and Viterbi decoder
@@ -99,6 +89,8 @@ for k = 2:K
 %     
 %     
 end
+
+fprintf('Done!\n');     
 
 close all;
 
