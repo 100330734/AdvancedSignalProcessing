@@ -3,15 +3,13 @@
 \usepackage{fancyhdr}
 \usepackage[a4paper, top=2.5cm, bottom=2.5cm, left=2.2cm, right=2.2cm]%
 {geometry}
-\usepackage{times}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}%
-
-
 \newcommand{\indicator}{\mathbb{I}} 
 \newcommand{\expectation}{\mathbb{E}} 
 \newcommand{\bs}{\boldsymbol}
+
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
 
@@ -58,7 +56,7 @@ So the complete data log-likelihood is written in this way
 \begin{split}
 l_{c}\left(\boldsymbol\theta\right) &= \sum\limits_{n=1}^{N}\sum\limits_{k=1}^{K}\indicator \lbrace s_{1}^{n}=k|Y,\boldsymbol\theta\rbrace \log(\pi_{k}) + \\
 &+ \sum\limits_{n=1}^{N}\sum\limits_{k=1}^{K}\sum\limits_{k'=1}^{K}\sum\limits_{t=1}^{T_{n}}\indicator \lbrace s_{t-1}^{n}=k,s_{t}^{n}=k'|Y,\boldsymbol\theta\rbrace \log(a_{k,k'}) + \\
-&+ \sum\limits_{n=1}^{N}\sum\limits_{t=1}^{T_{n}}  \indicator \lbrace s_{t}^{n}=k|Y,\boldsymbol\theta\rbrace    \sum\limits_{m=1}^{I}\mu^{n}_{t,m} \log(\theta_{k,m}).
+&+ \sum\limits_{n=1}^{N}\sum\limits_{t=1}^{T_{n}}\indicator \lbrace s_{t}^{n}=k|Y,\boldsymbol\theta\rbrace \sum\limits_{m=1}^{I}\mu^{n}_{t,m} \log(\theta_{k,m}).
 \end{split}
 \end{equation}
 \section{Expression for the expected complete data log likelihood}
@@ -68,20 +66,25 @@ Q \left( \boldsymbol { \theta } , \boldsymbol { \theta } ^ { t - 1 } \right) = E
 \end{equation}
 As in the previous section, and considering the nature of $l_{c}$ and its three main components, this expectation calculation can be divided in three.
 \begin{align}
-& \expectation \left( \sum _ { n = 1 } ^ { N } \indicator \left( s _ { 1 } ^ { n } = k | Y , \theta \right) \right) = \sum _ { n = 1 } ^ { N } \gamma _ { n , 1 } ( k ), \\
-& \expectation \left( \sum _ { n = 1 } ^ { N } \sum _ { t = 2 } ^ { T _ { n } } \indicator \left( s _ { t - 1 } ^ { n } = k , s _ { t } ^ { n } = k' | Y , \theta \right) \right) = \sum _ { n = 1 } ^ { N } \sum _ { t = 2 } ^ { T _ { n } } \xi _ { n , t } ( k , k' ), \\
-& \expectation \left( \sum _ { n = 1 } ^ { N } \sum _ { t = 1 } ^ { T _ { n } } \indicator \left( s _ { t } ^ { n } = k | Y , \theta \right) \right) = \sum _ { n = 1 } ^ { N } \sum _ { t = 1 } ^ { T _ { n } } \gamma _ { n , t } ( k ).
+& \expectation \left( \sum _ { n = 1 } ^ { N } \indicator \left( s _ { 1 } ^ { n } = k | Y , \bs\theta \right) \right) = \sum _ { n = 1 } ^ { N } \gamma _ { n , 1 } ( k ), \\
+& \expectation \left( \sum _ { n = 1 } ^ { N } \sum _ { t = 2 } ^ { T _ { n } } \indicator \left( s _ { t - 1 } ^ { n } = k , s _ { t } ^ { n } = k' | Y , \bs\theta \right) \right) = \sum _ { n = 1 } ^ { N } \sum _ { t = 2 } ^ { T _ { n } } \xi _ { n , t } ( k , k' ), \\
+& \expectation \left( \sum _ { n = 1 } ^ { N } \sum _ { t = 1 } ^ { T _ { n } } \indicator \left( s _ { t } ^ { n } = k | Y , \bs\theta \right) \right) = \sum _ { n = 1 } ^ { N } \sum _ { t = 1 } ^ { T _ { n } } \gamma _ { n , t } ( k ).
 \end{align}
 Where 
 \begin{equation}
 \sum _ { k = 1 } ^ { K } \gamma _ { n , t } ( k ) = 1.
 \end{equation}
-\noindent And being $\xi _ { n,t } ( k , k' )$ 
+\noindent Being $\xi _ { n,t } ( k , k' )$ 
 \begin{equation}
-\xi _ { n,t } ( k , k' ) = \alpha _ { t -1}^{n} ( k ) a _ { k,k' } \prod\limits_{m=1}^{I} \theta_{k,m}^{\mu^{n}_{t,m}} \beta _ { t  }^{n} ( k' ).
+\xi _ { n,t } ( k , k' ) = \alpha _ { t-1 }^{n} ( k ) a _ { k,k' } \prod\limits_{m=1}^{I} \theta_{k,m}^{\mu^{n}_{t,m}} \beta _ { t }^{n} ( k' ),
+\end{equation}
+and $ \gamma _ { n , t } ( k ) $
+\begin{equation}
+\gamma _ { n , t } ( k )\propto \beta _ { t }^{n} ( k )\alpha _ { t }^{n} ( k )
 \end{equation}
 The terms $\alpha$ and $\beta$ are computed by means of the forward-backward algorithm as follows
 \begin{align}
+\label{alfabeta}
 &\alpha _ { 1 }^{n} ( k ) = \pi _ { k } \prod\limits_{m=1}^{I}\theta_{k,m}^{\mu^{n}_{1,m}}, \\
 &\alpha _ { t }^{n} ( k ) = \left( \sum _ { k' = 1 } ^ { K } \alpha _ { t - 1 }^{n} ( k' ) a _ { k',k } \right) \prod\limits_{m=1}^{I}\theta_{k,m}^{\mu^{n}_{t,m}}, \\
 &\beta _ { T_{n} }^{n} ( k ) = 1, \\
@@ -236,4 +239,17 @@ And with that value of $\lambda$ the estimated value of $a_{k,k'}$ is
 \begin{equation}
 \widehat{a}_{k,k'} = \dfrac{\sum \limits_{n=1}^{N} \sum \limits_ { t = 1 } ^ { T _ { n } }\xi_{n,t}(k,k')}{\sum \limits_{n=1}^{N}\sum \limits_ { t = 1 } ^ { T _ { n } }\sum \limits_{k'=1}^{K}\xi_{n,t}(k,k')}.
 \end{equation}
+
+\section{Experiments}
+\subsection{MAP decoding}
+The state-by-state MAP decoding has been developed with the forward-backward algorithm, whose parameters $\alpha_{t}^{n}(k)$ and $\beta_{t}^{n}(k)$ have been computed as stated in \eqref{alfabeta} and following.
+\subsection{ML decoding}
+For the maximum likelihood sequence decoding a Viterbi algorithm has been implemented. The required parameters $\delta_{t}(i)$, $\varphi_{t}(i)$, and the detected states $\hat{s}_{t}$ are defined as follows.
+\begin{align}
+\delta_{1}(k)&=\pi_{k} \prod\limits_{m=1}^{I}\theta_{k,m}^{\mu^{n}_{1,m}} \\
+\delta_{t}(k)&=\prod\limits_{m=1}^{I}\theta_{k,m}^{\mu^{n}_{t,m}} \max _{k'} a_{k',k} \delta_{t-1}(k') \\
+\varphi_{t}(k)&=\underset{k'}{\operatorname{argmax}} \hspace{0.1cm}a_{k',k} \delta_{t-1}(k')\\
+\hat{\mathbf{s}}_{T}&=\underset{\boldsymbol{k}}{\arg \max } \delta_{T}(k)\\
+\hat{s}_{t}&=\varphi_{t+1}\left(\hat{s}_{t+1}\right) ºº
+\end{align}
 \end{document}
