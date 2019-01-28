@@ -7,7 +7,7 @@ load('observed.mat');
 %% SETUP
 K = 5;
 max_iter = 100;
-n_init = 10;
+n_init = 30;
 epsilon = 1e-3;
 debug = false;
 
