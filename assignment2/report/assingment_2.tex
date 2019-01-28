@@ -62,40 +62,40 @@
 \author{Daniel Barrejón Moreno} %if necessary, replace with your course title
 
 \maketitle
+
+In this project we will develop a EM Baum-Welch algorithm for training HMM for the available data set, which are sequences of documents. The goal is to find the states or topics each document belongs to. In the following we will derive the equations and finally we will present the different results we obtained for different number of topics.
 \section{Complete data log-likehood $l_{c}\left(\boldsymbol\theta\right)$ for the N sequences}
-The expression of the complete data log-likelihood will have the following form
+The complete data log-likelihood has the following form
 \begin{equation}
 \label{ll1}
 l_{c}\left(\boldsymbol\theta\right) = \log p ( S , Y | \boldsymbol\theta ) = \log \prod _ { n = 1 } ^ { N } \left( p \left( s _ { 1 } ^ { n } | \boldsymbol\pi \right) \prod _ { t = 2 } ^ { T _ { n } } p \left( s _ { t } ^ { n } | s _ { t - 1 } ^ { n } , \mathbf { A } \right) \right) \left( \prod _ { t = 1 } ^ { T _ { n } } p \left( \mathbf { y } _ { t } ^ { n } | s _ { t } ^ { n } , \mathbf { B } \right) \right),
 \end{equation}
 where $\log$ operator is the Naperian logarithm, $S$ represents the hidden states of the model, $Y$ is the observed continuous sequence, $\mathbf { A }$ stands for the state transition probabilities,$B$ the observatoin emission probabilities and $\boldsymbol\pi$ is the initial state probability distribution.\\
-
 \noindent The parameters of the model are
 \begin{equation}
 \boldsymbol\theta = \{ \mathbf { A } , \mathbf { B } , \boldsymbol\pi \},
 \end{equation}
-where $\mathbf { A }$  is the state transition matrix, $\mathbf { B } $ is the emission matrix and  $\boldsymbol\pi $ represents the probability of each state.
-Equation \ref{ll1} is composed by three main terms: the $\boldsymbol\pi$, $\mathbf { A }$ and $\mathbf { B } $ ones which can be rewritten as
+where $\mathbf { A }$  is the state transition matrix, $\mathbf { B } $ is the emission matrix and  $\boldsymbol\pi $ represents the probability of each state. In Equation \ref{ll1} we can distinguish three main terms: the $\boldsymbol\pi$, $\mathbf { A }$ and $\mathbf { B } $ ones which can be rewritten as
 \begin{align}
 p \left( s _ { 1 } ^ { n } | \boldsymbol\pi \right) &= \prod\limits_{k=1}^{K}\pi_{k}^{\indicator \lbrace s_{1}^{n}=k|Y,\boldsymbol\theta\rbrace},\\
 p \left( s _ { t } ^ { n } | s _ { t - 1 } ^ { n } , \mathbf { A } \right) &= \prod\limits_{k=1}^{K} \prod\limits_{k'=1}^{K}a_{k,k'}^{\indicator \lbrace s_{t-1}^{n}=k,s_{t}^{n}=k'|Y,\boldsymbol\theta\rbrace},\\
 p \left( \mathbf { y } _ { t } ^ { n } | s _ { t } ^ { n } , \mathbf { B } \right) &= \prod\limits_{k=1}^{K} p \left( \mathbf { y } _ { t } ^ { n } | \boldsymbol b_{k} \right) = \prod\limits_{k=1}^{K} p \left( \mathbf { y } _ { t } ^ { n } | \boldsymbol\theta_{k} \right) \label{p3LL}.
 \end{align}
-In this case, $\indicator$ represents an indicator function, $k = \lbrace{1,...,K}\rbrace$ the current latent state of the model, $a_{k,k'}$ the $k$th row and $k'$th column element of the forementioned matrix $\mathbf { A }$ and $t = \lbrace{1,...,T_{n}}\rbrace$ the position of the state in sequence $n$. Please notice that now, $\mathbf{b}_{k}$ (that belonged to $\mathbf{B}$) becomes $\boldsymbol\theta_{k}$, which denotes the hyperparameters of the categorical distribution that the data follow.\\
+In this case, $\indicator$ represents an indicator function, $k = \lbrace{1,...,K}\rbrace$ the current latent state of the model, $a_{k,k'}$ the $k$th row and $k'$th column element of the forementioned matrix $\mathbf { A }$ and $t = \lbrace{1,...,T_{n}}\rbrace$ the position of the state in sequence $n$. In order to have a similar notation as the one used in Assignment 1,  $\mathbf{b}_{k}$ (that belonged to $\mathbf{B}$) becomes $\boldsymbol\theta_{k}$, which represents the categories of the topic $k$ for the categorical distribution.\\
 
 \noindent Since our data follow a categorical distribution, Equation \ref{p3LL} can be expressed as
 \begin{equation}
-p \left( \mathbf { y } _ { t } ^ { n } | \boldsymbol\theta_{k} \right) = \prod\limits_{j=1}^{Dt} \text{Cat}(y_{j,t}|\boldsymbol\theta_{k}).
+p \left( \mathbf { y } _ { t } ^ { n } | \boldsymbol\theta_{k} \right) = \prod\limits_{j=1}^{Dt} \text{Cat}(y_{j,t}|\boldsymbol\theta_{k}),
 \end{equation}
-With a further development we can get
+and with further development we can get the following expression
 \begin{equation}
 p \left( \mathbf { y } _ { t } ^ { n } | \boldsymbol\theta_{k} \right) = \prod\limits_{j=1}^{Dt} \text{Cat}(y_{j,t}|\boldsymbol\theta_{k}) = \prod\limits_{m=1}^{I}\prod\limits_{j=1}^{Dt}\theta_{k,m}^{\indicator\lbrace{y_{j,t}^{n}=m}\rbrace} = \prod\limits_{m=1}^{I}\theta_{k,m}^{\sum\limits_{j=1}^{Dt}\indicator\lbrace{y_{j,t}^{n}=m}\rbrace} = \prod\limits_{m=1}^{I}\theta_{k,m}^{\mu^{n}_{t,m}},
 \end{equation}
-being $\mu^{n}_{t,m}$
+where  $\mu^{n}_{t,m}$ is denoted as follows
 \begin{equation}
 \mu^{n}_{t,m} = \sum\limits_{j=1}^{Dt}\indicator\lbrace{y_{j,t}^{n}=m}\rbrace.
 \end{equation}
-The final expression of the complete data log-likelihood can be expressed in the following form	
+Finally, the expression of the complete data log-likelihood can be expressed in the following form	
 \begin{equation}
 \begin{split}
 l_{c}\left(\boldsymbol\theta\right) &= \sum\limits_{n=1}^{N}\sum\limits_{k=1}^{K}\indicator \lbrace s_{1}^{n}=k|Y,\boldsymbol\theta\rbrace \log(\pi_{k}) + \\
@@ -103,6 +103,7 @@ l_{c}\left(\boldsymbol\theta\right) &= \sum\limits_{n=1}^{N}\sum\limits_{k=1}^{K
 &+ \sum\limits_{n=1}^{N}\sum\limits_{t=1}^{T_{n}}\indicator \lbrace s_{t}^{n}=k|Y,\boldsymbol\theta\rbrace \sum\limits_{m=1}^{I}\mu^{n}_{t,m} \log(\theta_{k,m}).
 \end{split}
 \end{equation}
+
 \section{Expected Complete Data Logl-likelihood $Q \left( \boldsymbol { \theta } , \boldsymbol { \theta } ^ { t - 1 } \right)$}
 The expected complete data log-likelihood has the following form
 \begin{equation}
@@ -112,13 +113,13 @@ As in the previous section, and considering the nature of $l_{c}$ and its three 
 \begin{align}
 & \expectation \left( \sum _ { n = 1 } ^ { N } \indicator \left( s _ { 1 } ^ { n } = k | Y , \bs\theta \right) \right) = \sum _ { n = 1 } ^ { N } \gamma _ { n , 1 } ( k ), \\
 & \expectation \left( \sum _ { n = 1 } ^ { N } \sum _ { t = 2 } ^ { T _ { n } } \indicator \left( s _ { t - 1 } ^ { n } = k , s _ { t } ^ { n } = k' | Y , \bs\theta \right) \right) = \sum _ { n = 1 } ^ { N } \sum _ { t = 2 } ^ { T _ { n } } \xi _ { n , t } ( k , k' ), \\
-& \expectation \left( \sum _ { n = 1 } ^ { N } \sum _ { t = 1 } ^ { T _ { n } } \indicator \left( s _ { t } ^ { n } = k | Y , \bs\theta \right) \right) = \sum _ { n = 1 } ^ { N } \sum _ { t = 1 } ^ { T _ { n } } \gamma _ { n , t } ( k ).
+& \expectation \left( \sum _ { n = 1 } ^ { N } \sum _ { t = 1 } ^ { T _ { n } } \indicator \left( s _ { t } ^ { n } = k | Y , \bs\theta \right) \right) = \sum _ { n = 1 } ^ { N } \sum _ { t = 1 } ^ { T _ { n } } \gamma _ { n , t } ( k ),
 \end{align}
-Where 
+where it must be satisfied
 \begin{equation}
 \sum _ { k = 1 } ^ { K } \gamma _ { n , t } ( k ) = 1.
 \end{equation}
-\noindent Being $\xi _ { n,t } ( k , k' )$ 
+\noindent The analogous backwards term for$ \gamma _ { n , t } ( k ) $ is denoted as $\xi _ { n,t } ( k , k' )$ 
 \begin{equation}
 \xi _ { n,t } ( k , k' ) = \alpha _ { t-1 }^{n} ( k ) a _ { k,k' } \prod\limits_{m=1}^{I} \theta_{k,m}^{\mu^{n}_{t,m}} \beta _ { t }^{n} ( k' ),
 \end{equation}
@@ -134,7 +135,7 @@ The terms $\alpha$ and $\beta$ are computed by means of the \textbf{forward-back
 &\beta _ { T_{n} }^{n} ( k ) = 1, \\
 & \beta _ { t }^{n} ( k ) = \sum _ {k' = 1 } ^ { K } a _ { k,k'}  \prod\limits_{m=1}^{I}\theta_{k',m}^{\mu^{n}_{t+1,m}}  \beta _ { t + 1 }^{n} ( k' ).
 \end{align}
-So the complete expression for $Q \left( \boldsymbol { \theta } , \boldsymbol { \theta } ^ { t - 1 } \right)$ is now
+The development above yields the final expression for $Q \left( \boldsymbol { \theta } , \boldsymbol { \theta } ^ { t - 1 } \right)$
 \begin{equation}
 \begin{split}
 Q \left( \boldsymbol { \theta } , \boldsymbol { \theta } ^ { t - 1 } \right) &= \sum\limits_{k=1}^{K}\sum _ { n = 1 } ^ { N } \gamma _ { n , 1 } ( k ) \log(\pi_{k}) + \\
@@ -143,14 +144,14 @@ Q \left( \boldsymbol { \theta } , \boldsymbol { \theta } ^ { t - 1 } \right) &= 
 \end{split}
 \end{equation}
 \section{ML Inference}
-There are three parameters for the model, which are $\mathbf{A}$, $\bs\theta$ and $\bs\pi$, and they are computed by means of Lagrange multipliers.
+In this section we develop the update formulas for the model, which are $\mathbf{A}$, $\bs\theta$ and $\bs\pi$. These will be computed using Lagrange-Multipliers.
 \subsection{ML estimation of $\pi_{k}$}
 In order to compute $\pi_{k}$, we first need to take into account the following restrictions
 \begin{align}
 & 0 \leq \pi_{k} \leq 1 \\
 & \sum\limits_{k = 1}^{K} \pi_{k} = 1.
 \end{align}
-Now, let us define the lagrangian as
+Now, let us define the Lagrangian as
 \begin{equation}
 \label{lagrange_pik}
 L\left( Q(\pi_{k}),\lambda \right) = Q(\pi_{k}) + \lambda \left( \sum \limits_{k=1}^{K} \pi_{k} - 1 \right),
@@ -160,7 +161,7 @@ which will be optimized in this way
 \label{minmax_lagrange_pik}
 \min_{\substack{\lambda}} \max_{\substack{\pi_{k}}} \lbrace L\left( Q(\pi_{k}),\lambda \right) \rbrace.
 \end{equation}
-By first taking the derivative with respect to $\pi_{k}$ and equating it to 0
+We first take the derivative with respect to $\pi_{k}$ and equating it to 0
 \begin{equation}
 \label{deriv_pik}
 \begin{split}
@@ -168,7 +169,7 @@ By first taking the derivative with respect to $\pi_{k}$ and equating it to 0
 & \pi_{k} = \dfrac{1}{\lambda} \sum \limits_{n=1}^{N} \gamma_{n,1}(k).
 \end{split}
 \end{equation}
-And later with respect to $\lambda$
+Now, with respect to $\lambda$
 \begin{equation}
 \begin{split}
 & \dfrac{\partial L}{\partial \lambda} = \sum \limits_{k=1}^{K} \pi_{k} - 1 = 0,\\
@@ -203,7 +204,7 @@ Now, the parameter to be estimated is $\theta_{k,m}$ and the constraint is now
 \label{constraint_thetakm}
 \sum \limits_{m=1}^{I} \theta_{k,m} = 1.
 \end{equation}
-Being the whole expression
+In this case, the expression for the Lagrangian has the following form
 \begin{equation}
 \label{lagrange_thetakm}
 L\left( Q(\theta_{k,m}),\lambda \right) = Q(\theta_{k,m}) + \lambda \left( \sum \limits_{m=1}^{I} \theta_{k,m} - 1 \right),
@@ -241,12 +242,12 @@ And with that value of $\lambda$ the estimated value of $\theta_{k,m}$ is
 \widehat{\theta}_{k,m} = \dfrac{\sum \limits_{n=1}^{N} \sum \limits_ { t = 1 } ^ { T _ { n } }\gamma_{n,t}(k)\mu_{t,m}^{n}}{\sum \limits_{n=1}^{N}\sum \limits_ { t = 1 } ^ { T _ { n } }\sum \limits_{m=1}^{I}\gamma_{n,t}(k)\mu_{t,m}^{n}}.
 \end{equation}
 \subsection{ML estimation of $a_{k,k'}$}
-At last, the parameter to be estimated is $a_{k,k'}$ and the constraint is now
+The last parameter to be estimated is $a_{k,k'}$. The constraint is now
 \begin{equation}
 \label{constraint_akk}
 \sum \limits_{k'=1}^{K} a_{k,k'} = 1.
 \end{equation}
-Being the whole expression
+The Lagrangian will follow this expression
 \begin{equation}
 \label{lagrange_akk}
 L\left( Q(a_{k,k'}),\lambda \right) = Q(a_{k,k'}) + \lambda \left( \sum \limits_{k'=1}^{K} a_{k,k'} - 1 \right),
@@ -312,7 +313,7 @@ In particular, we will use an iterative implementation of the Viterbi Algorithm.
 \end{itemize}
 
 \section{Experiments}
-
+For the experiments conducted in this project the maximum number of iterations of the EM algorithm has been set to 100 iterations, the tolerance value has been set to $10^{-3}$ a total of 30 different initializations have been done. We have tested the system for different values of $K$, \emph{i.e.} $K = \{2,3,4,5\}$. For each of these experiments we will show the the best log-likelihood for the optimal initialization of the algorithm as well as $A$ and $\pi$. The matrix $\boldsymbol{\theta}$ that is actually the model parameter $\mathbf{B}$ has not been shown because the number of rows is equal to the length of the dictionary $I$ and displaying such matrix both in matrix form or with a colormap plot does not give much information of the emission probabilities. \\
 
 \noindent One \textbf{important} aspect about the implementation of the algorithm is that instead of working with the actual $\xi _ { n,t } ( k , k' )$ we work with a similar implementation used in \cite{murphy2012machine}, which consider working with the expected sufficient statistics for the transition matrix, for a given observation sequence. This may be rewritten as follows
 \begin{equation}
@@ -321,19 +322,21 @@ In particular, we will use an iterative implementation of the Viterbi Algorithm.
 where the subscript $\Sigma$ indicates the sum over $t$. Notice that, for a given sequence, this matrix is no longer a tensor but a matrix of dimension $K\times K$.
 
 \subsection{Simulations}
-In Figure \ref{fig:ll_comparison} we show first all the log-likelihoods together, where one can infer that the best case happens for K = 5 since it gives the curve with the biggest values.
+In Table \ref{tab:experiments} we can check the different reported values of $\mathbf{A}$ and $\pi$ for the different values of $k$.
 
-
-\begin{table}[]
-	\hskip-1.7cm
+\begin{table}[h]
+	\hskip-2cm
 	\begin{tabular}{|c|c|c|c|c|}
 		\hline
-		& 2 & 3 & 4 & 5 \\ \hline \hline
+		$K = $& 2 & 3 & 4 & 5 \\ \hline \hline
 		$\mathbf{A}$     & $\begin{bmatrix}0.32 & 0.68\\0.37 & 0.63 \end{bmatrix} $ &  $\begin{bmatrix}0.64 & 0.18 & 0.18\\0.44 & 0.20 & 0.36\\0.38 & 0.44 & 0.18 \end{bmatrix}$  &$ \begin{bmatrix}0.2 & 0.27 & 0.43 & 0.1\\0.21 & 0.30 & 0.13 & 0.36\\0.1 & 0.35 & 0.34 & 0.21\end{bmatrix}  $  & $\begin{bmatrix}0.02 & 0.22 & 0.36 & 0.34 & 0.06\\0.07 & 0.16 & 0.21 & 0.21 & 0.35\\0.12 & 0.11 & 0.44 & 0.15 & 0.18\\0.32 & 0.22 & 0.35 & 0.1 & 0.01\\0.26 & 0.14 & 0.30 & 0.20 & 0.10 \end{bmatrix}   $ \\ \hline
 		$\pi$ & $\begin{bmatrix}0.28 & 0.72\end{bmatrix} $  & $\begin{bmatrix}0.14 & 0.30 & 0.56\end{bmatrix} $  & $\begin{bmatrix}0.34 & 0.38 & 0.28 & 1.27e^{-80}\end{bmatrix} $   & $\begin{bmatrix}0.48 & 0.38 & 6.46e^{-80} & 1.12e^{-103} & 0.13\end{bmatrix} $  \\ \hline
 	\end{tabular}
+	\caption{Table for the different Experiments.}
+	\label{tab:experiments}
 \end{table}
 
+The comparison of the log-likelihood for each value of $K$ is shown in Figure \ref{fig:ll_comparison}. As it can be seen, for greater values of $K$ the log-likelihood improves. From this behaviour we could infer that the optimal value is $K=5$. However, when we check the $\pi$ values for $K=4$ and $K=5$ at Table \ref{tab:experiments} we can see that there is one and two topics respectively whose influence on the documents is actually a really small value which can be approximated to 0. Therefore, we can conclude that, although for $K=5$ we get the optimal likelihood, actually when we observe the output result we could also conclude that $K=3$ might be also a good candidate.
 
 \begin{figure}[h]
 	\centering
@@ -342,7 +345,7 @@ In Figure \ref{fig:ll_comparison} we show first all the log-likelihoods together
 	\label{fig:ll_comparison}
 \end{figure}
 
-Next, Figure \ref{fig:Q_all} displays like Figure \ref{fig:ll_comparison} all log-likelihood curves but in this case separated. \\
+In Figure \ref{fig:Q_all} we show individually each likelihood. As you might notice the likelihood always increases; however, when the curve gets to the 'plateau' behaviour, the likelihood tends to oscillate. This is due to the correction steps we are taking into account in the implementation of the code when trying to keep the parameters of the model which are probabilities within the range $\in (0,1)$. With some more depuration of the code this behaviour would disappear.\\
 
 \begin{figure}[h]
 	\centering
@@ -373,7 +376,7 @@ Next, Figure \ref{fig:Q_all} displays like Figure \ref{fig:ll_comparison} all lo
 	\label{fig:Q_all}
 \end{figure}
 
-\noindent This last set of figures, which include from Figure \ref{fig:viterbi_2} until Figure \ref{fig:viterbi_5}, show the estimated states for sequences for K $\in$ [2,5].
+Finally, the states for each sequence and each document using both the MAP Forward-Backwards and the Viterbi algorithm are reported in  the Figures \ref{fig:viterbi_2}, \ref{fig:viterbi_3}, \ref{fig:viterbi_4} and \ref{fig:viterbi_5}.
 
 \begin{figure}[h]
 	\centering
@@ -403,10 +406,10 @@ Next, Figure \ref{fig:Q_all} displays like Figure \ref{fig:ll_comparison} all lo
 	\label{fig:viterbi_5}
 \end{figure}
 
-\section{Final Thoughts}
-By looking at the plots, we can see a proper behaviour of of the curves (which begin growing up and later they stabilize around some fixed value) and the algorithms. Both experiments seem to have a similar performance, they show that they reach almost always the same states for all the sequences. And at last, a bigger number of K increases the complexity of the model, which includes the number of states among other things, but gives a better performance with a bigger log-likelihood curve.
-
-
+\section{Conclusions}
+In this project we have implemented the EM Baum-Welch algorithm to apply it on a sequence of documents in order to find the topics they belong to. This is done using a HMM approach, for which we have been able to see the different states using the MAP state-by-state Forward-Backwards decoder and the Viterbi algorithm.
+Although our final reported likelihoods had some oscillations, still we could check that the likelihood improves at every iterations, and the final output with the model parameters is consistent to the solution we were looking for. However, we have not been able to compare the results of the decoding to the ground truth solution and therefore we cannot be certain whether the optimal number of topics is $K=3$ or $K=5$. What is clear is that every document is generated by a certain state and therefore it belongs to a very specific topic.
+\clearpage
 \nocite{*}
 \printbibliography
 \end{document}
