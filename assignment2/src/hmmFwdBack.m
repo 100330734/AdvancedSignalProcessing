@@ -52,12 +52,12 @@ alpha_n = zeros(K,T);
 
 % log_alpha_1 = log(pi) + mu(1,:)*log(theta');
 alpha_n(:,1) = Pb_mat(:,1).*pi;
-% alpha_n(:,1) = alpha_n(:,1)./sum(alpha_n(:,1));
+alpha_n(:,1) = alpha_n(:,1)./sum(alpha_n(:,1));
 
 for t = 2:1:T
     AT = A'; % important!
     alpha_n(:,t) = (AT * alpha_n(:,t-1)) .* Pb_mat(:,t);
-%     alpha_n(:,t) = alpha_n(:,t)./sum(alpha_n(:,t));
+    alpha_n(:,t) = alpha_n(:,t)./sum(alpha_n(:,t));
 end
 
 
@@ -83,11 +83,11 @@ function beta_n = hmmBackwards(A,Pb_mat)
 
 [K,T] = size(Pb_mat);
 beta_n = zeros(K,T);
-beta_n(:,T) = ones(K,1);
+beta_n(:,T) = ones(K,1)/K;
 for t=T-1:-1:1
     prob_b_t_plus_1 = Pb_mat(:,t+1);
     beta_n(:,t) = A * (beta_n(:,t+1) .* prob_b_t_plus_1);
-%     beta_n(:,t)  = beta_n(:,t)./sum(beta_n(:,t));
+    beta_n(:,t)  = beta_n(:,t)./sum(beta_n(:,t));
 end
 
 end

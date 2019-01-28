@@ -9,7 +9,7 @@ K = 5;
 max_iter = 100;
 n_init = 5;
 epsilon = 1e-3;
-MAP = true; 
+MAP = false; 
 debug = false;
 
 print_setup(MAP,max_iter,n_init,epsilon)
@@ -105,6 +105,39 @@ for k = 2:K
     
     
 end
+
+
+%% Plot BIC
+
+figure
+plot(2:K,bic_list,'LineWidth',0.2)
+title('Bic Model Criterion','Interpreter','latex')
+xlabel('K','Interpreter','latex')
+ylabel('BIC', 'Interpreter','latex')
+xticks(2:k)
+labels = string(2:k);
+xticklabels(labels);
+if MAP
+    saveas(gcf,sprintf('./images/MAP/BIC_MAP.png'))
+else
+    saveas(gcf,sprintf('./images/ML/BIC_ML.png'))
+end
+
+% Plot LL increasing with K
+figure
+plot(2:K,ll_opt_k,'LineWidth',0.2)
+title('Log-likelihood w.r.t $K$','Interpreter','latex')
+xlabel('$K$','Interpreter','latex')
+xticks(1:k)
+labels = string(1:k);
+xticklabels(labels);
+if MAP
+    saveas(gcf,sprintf('./images/MAP/ll_MAP.png'))
+else
+    saveas(gcf,sprintf('./images/ML/ll_ML.png'))
+end
+
+
 
 close all;
 

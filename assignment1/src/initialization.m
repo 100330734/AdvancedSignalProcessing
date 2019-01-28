@@ -27,7 +27,7 @@ if MAP
     
 else
     
-    pi = rand(K,1);
+    pi = rand(1,K);
     pi = pi/sum(pi); % probabilities of the mixture components
   
     theta = rand([K,I]); 

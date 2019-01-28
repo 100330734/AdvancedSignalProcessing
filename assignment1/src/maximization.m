@@ -24,27 +24,8 @@ function [new_pi,new_theta] = maximization(K,N,I,r,mu,prior,MAP)
     new_pi = sum(r,1)/N;
     % theta
     new_theta = r'*mu./sum(r'*mu,2);
+    new_theta(new_theta==0) = realmin;
     % MAP
     
-
-    %% Deprecated
-    
-    % PI
-    % FOR-LOOP FORM    
-    % new_pi = zeros(K,1);
-    % for k = 1:K
-    %  new_pi(k) = (1/N)*sum(r(:,k));
-    % end
-     
-    % THETA
-    % FOR-LOOP FORM
-    % for k = 1:K
-    %     for m = 1:I
-    %          suma_I_rmu(k,m) = sum(r(:,k).*mu(:,m));
-    %      end     
-    %  end
-    %
-    % suma_IK_rmu = sum(suma_I_rmu,2); 
-    % new_theta = suma_I_rmu./suma_IK_rmu;
 end
 

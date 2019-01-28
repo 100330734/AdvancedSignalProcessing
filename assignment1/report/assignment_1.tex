@@ -523,7 +523,25 @@ where $ ( \hat { L } )$ is the maximized value of the likelihood function and $\
 \begin{equation}
 \text{dof}(\bstheta) = K(I-1) + (K-1) = KI-1,
 \end{equation}
-given by $\bstheta$ and $\bspi$. Since the number of parameters increases with $K$, and the likelihood does not increase that much for different $K$, both criteria were always increasing, and therefore we did not use them to choose the optimal value of $K$.
+given by $\bstheta$ and $\bspi$. Since the number of parameters increases with $K$, and the likelihood does not increase that much for different $K$, both criteria were always increasing, and therefore we did not use them to choose the optimal value of $K$. This is illustrated in Figure \ref{fig:ll_bic} where we can see that for increasing number of topics $K$ the log-likelihood always increase and so does the BIC.
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/MAP/ll_MAP.png}
+		\caption{}
+		\label{fig:ll_MAP}
+	\end{subfigure}
+	~	
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width=\textwidth]{images/MAP/BIC_MAP.png}
+		\caption{}
+		\label{fig:bic}
+	\end{subfigure}
+	\caption{Figure \ref{fig:ll_MAP} shows the log-likelihood increasing for different values of $K$. Figure \ref{fig:bic} shows the BIC model criterion.}
+	\label{fig:ll_bic}
+\end{figure}
+
 
 \section{WordCloud visualization}
 
@@ -551,8 +569,6 @@ In order to gain more visual intuition of the solution, we show two Wordclouds g
 \section{Conclusions}
 
 Throughout this project we have studied the maximum likelihood and the maximum a posterior approach for the Expectation Maximization algorithm applied to a collection of documents following a categorical distribution. It has been shown that using a model in which we know some prior information can achieve better performance characteristics and that the number of mixtures is an important hyperparameter that must be selected according to some criterion. In our case, given the big number of parameters of the model and the small change in the likelihoods for different values of $K$ we  could not use model information criteria and therefore we analyzed the corresponding outputs of the model.
-
-
 
 \clearpage
 \nocite{*}

@@ -7,7 +7,6 @@
 
 
 \usepackage[utf8]{inputenc}
-\usepackage{intmacros}
 \usepackage[margin=1in]{geometry} 
 \usepackage{amsmath,amsthm,amssymb}
 \usepackage[backend=biber, style=ieee, isbn=false,sortcites, maxbibnames=5, minbibnames=1]{biblatex}
@@ -15,10 +14,12 @@
 \usepackage{xcolor}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{caption,subcaption}
+\captionsetup{labelsep = period} % Figure 2. Caption (rather than Figure 2: Caption)
 
 \usepackage[]{hyperref}
 \hypersetup{
-	colorlinks   = false, %Colours links instead of ugly boxes
+	colorlinks   = true, %Colours links instead of ugly boxes
 	urlcolor     = blue, %Colour for external hyperlinks
 	linkcolor    = red, %Colour of internal links
 	citecolor   = green %Colour of citations
@@ -39,10 +40,12 @@
 \newenvironment{corollary}[2][Corollary]{\begin{trivlist}
 		\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
 
-% OPERATORS
 \newcommand{\indicator}{\mathbb{I}} 
+\newcommand{\expectation}{\mathbb{E}} 
 \newcommand{\bs}{\boldsymbol}
 
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
 
 \begin{document}
 	
@@ -54,31 +57,30 @@
 
 \title{Assignment 2: HMM for Categorical Data Sequences}%
 \author{Daniel Barrejón Moreno} %if necessary, replace with your course title
-\date{\today}
-\maketitle
 
-	
-\section{Expression for the complete data log-likehood for the N sequences}
-According to this expression for the complete data log-likelihood
+\maketitle
+\section{Complete data log-likehood $l_{c}\left(\boldsymbol\theta\right)$ for the N sequences}
+The expression of the complete data log-likelihood will have the following form
 \begin{equation}
 \label{ll1}
-l_{c}\left(\boldsymbol\theta\right) = \log p ( S , Y | \boldsymbol\theta ) = \log \prod _ { n = 1 } ^ { N } \left( p \left( s _ { 1 } ^ { n } | \boldsymbol\pi \right) \prod _ { t = 2 } ^ { T _ { n } } p \left( s _ { t } ^ { n } | s _ { t - 1 } ^ { n } , \mathbf { A } \right) \right) \left( \prod _ { t = 1 } ^ { T _ { n } } p \left( \mathbf { y } _ { t } ^ { n } | s _ { t } ^ { n } , \mathbf { B } \right) \right)
+l_{c}\left(\boldsymbol\theta\right) = \log p ( S , Y | \boldsymbol\theta ) = \log \prod _ { n = 1 } ^ { N } \left( p \left( s _ { 1 } ^ { n } | \boldsymbol\pi \right) \prod _ { t = 2 } ^ { T _ { n } } p \left( s _ { t } ^ { n } | s _ { t - 1 } ^ { n } , \mathbf { A } \right) \right) \left( \prod _ { t = 1 } ^ { T _ { n } } p \left( \mathbf { y } _ { t } ^ { n } | s _ { t } ^ { n } , \mathbf { B } \right) \right),
 \end{equation}
-where log operator is the Naperian logarithm, $S$ represents the hidden states of the model, $Y$ is the observed continuous sequence, $\mathbf { A }$ stands for the state transition probabilities,$B$ the observatoin emission probabilites and $\boldsymbol\pi$ is the initial state probability distribution. \\
+where $\log$ operator is the Naperian logarithm, $S$ represents the hidden states of the model, $Y$ is the observed continuous sequence, $\mathbf { A }$ stands for the state transition probabilities,$B$ the observatoin emission probabilities and $\boldsymbol\pi$ is the initial state probability distribution.\\
 
 \noindent The parameters of the model are
 \begin{equation}
-\boldsymbol\theta = \{ \mathbf { A } , \mathbf { B } , \boldsymbol\pi \}.
+\boldsymbol\theta = \{ \mathbf { A } , \mathbf { B } , \boldsymbol\pi \},
 \end{equation}
-Equation \eqref{ll1} is composed by three main terms: the $\boldsymbol\pi$, $\mathbf { A }$ and $\mathbf { B } $ ones which can be rewritten as
+where $\mathbf { A }$  is the state transition matrix, $\mathbf { B } $ is the emission matrix and  $\boldsymbol\pi $ represents the probability of each state.
+Equation \ref{ll1} is composed by three main terms: the $\boldsymbol\pi$, $\mathbf { A }$ and $\mathbf { B } $ ones which can be rewritten as
 \begin{align}
 p \left( s _ { 1 } ^ { n } | \boldsymbol\pi \right) &= \prod\limits_{k=1}^{K}\pi_{k}^{\indicator \lbrace s_{1}^{n}=k|Y,\boldsymbol\theta\rbrace},\\
 p \left( s _ { t } ^ { n } | s _ { t - 1 } ^ { n } , \mathbf { A } \right) &= \prod\limits_{k=1}^{K} \prod\limits_{k'=1}^{K}a_{k,k'}^{\indicator \lbrace s_{t-1}^{n}=k,s_{t}^{n}=k'|Y,\boldsymbol\theta\rbrace},\\
 p \left( \mathbf { y } _ { t } ^ { n } | s _ { t } ^ { n } , \mathbf { B } \right) &= \prod\limits_{k=1}^{K} p \left( \mathbf { y } _ { t } ^ { n } | \boldsymbol b_{k} \right) = \prod\limits_{k=1}^{K} p \left( \mathbf { y } _ { t } ^ { n } | \boldsymbol\theta_{k} \right) \label{p3LL}.
 \end{align}
-In this case, $\indicator$ represents an indicator function, $k = \lbrace{1,...,K}\rbrace$ the current latent state of the model, $a_{k,k'}$ the $k$th row and $k'$th column element of the forementioned matrix $\mathbf { A }$, $t = \lbrace{1,...,T_{n}}\rbrace$ the position of the state in sequence $n$. Please notice that now, $\mathbf{b}_{k}$ (that belonged to $\mathbf{B}$ becomes $\boldsymbol\theta_{k}$, which denotes the hyperparameters of the categorical distribution that the data follow.\\
+In this case, $\indicator$ represents an indicator function, $k = \lbrace{1,...,K}\rbrace$ the current latent state of the model, $a_{k,k'}$ the $k$th row and $k'$th column element of the forementioned matrix $\mathbf { A }$ and $t = \lbrace{1,...,T_{n}}\rbrace$ the position of the state in sequence $n$. Please notice that now, $\mathbf{b}_{k}$ (that belonged to $\mathbf{B}$) becomes $\boldsymbol\theta_{k}$, which denotes the hyperparameters of the categorical distribution that the data follow.\\
 
-\noindent Since our data follow a categorical distribution, equation (\ref{p3LL}) can be expressed as
+\noindent Since our data follow a categorical distribution, Equation \ref{p3LL} can be expressed as
 \begin{equation}
 p \left( \mathbf { y } _ { t } ^ { n } | \boldsymbol\theta_{k} \right) = \prod\limits_{j=1}^{Dt} \text{Cat}(y_{j,t}|\boldsymbol\theta_{k}).
 \end{equation}
@@ -90,35 +92,40 @@ being $\mu^{n}_{t,m}$
 \begin{equation}
 \mu^{n}_{t,m} = \sum\limits_{j=1}^{Dt}\indicator\lbrace{y_{j,t}^{n}=m}\rbrace.
 \end{equation}
-So the complete data log-likelihood is written in this way
+The final expression of the complete data log-likelihood can be expressed in the following form	
 \begin{equation}
 \begin{split}
 l_{c}\left(\boldsymbol\theta\right) &= \sum\limits_{n=1}^{N}\sum\limits_{k=1}^{K}\indicator \lbrace s_{1}^{n}=k|Y,\boldsymbol\theta\rbrace \log(\pi_{k}) + \\
 &+ \sum\limits_{n=1}^{N}\sum\limits_{k=1}^{K}\sum\limits_{k'=1}^{K}\sum\limits_{t=1}^{T_{n}}\indicator \lbrace s_{t-1}^{n}=k,s_{t}^{n}=k'|Y,\boldsymbol\theta\rbrace \log(a_{k,k'}) + \\
-&+ \sum\limits_{n=1}^{N}\sum\limits_{t=1}^{T_{n}}  \indicator \lbrace s_{t}^{n}=k|Y,\boldsymbol\theta\rbrace    \sum\limits_{m=1}^{I}\mu^{n}_{t,m} \log(\theta_{k,m}).
+&+ \sum\limits_{n=1}^{N}\sum\limits_{t=1}^{T_{n}}\indicator \lbrace s_{t}^{n}=k|Y,\boldsymbol\theta\rbrace \sum\limits_{m=1}^{I}\mu^{n}_{t,m} \log(\theta_{k,m}).
 \end{split}
 \end{equation}
-\section{Expression for the expected complete data log likelihood}
+\section{Expected Complete Data Logl-likelihood $Q \left( \boldsymbol { \theta } , \boldsymbol { \theta } ^ { t - 1 } \right)$}
 The expected complete data log-likelihood has the following form
 \begin{equation}
 Q \left( \boldsymbol { \theta } , \boldsymbol { \theta } ^ { t - 1 } \right) = E \left\{ l _ { c } ( \boldsymbol { \theta } ) | \mathcal { D } , \boldsymbol { \theta } ^ { t - 1 } \right\}
 \end{equation}
 As in the previous section, and considering the nature of $l_{c}$ and its three main components, this expectation calculation can be divided in three.
 \begin{align}
-& \expectation \left( \sum _ { n = 1 } ^ { N } \indicator \left( s _ { 1 } ^ { n } = k | Y , \theta \right) \right) = \sum _ { n = 1 } ^ { N } \gamma _ { n , 1 } ( k ), \\
-& \expectation \left( \sum _ { n = 1 } ^ { N } \sum _ { t = 2 } ^ { T _ { n } } \indicator \left( s _ { t - 1 } ^ { n } = k , s _ { t } ^ { n } = k' | Y , \theta \right) \right) = \sum _ { n = 1 } ^ { N } \sum _ { t = 2 } ^ { T _ { n } } \xi _ { n , t } ( k , k' ), \\
-& \expectation \left( \sum _ { n = 1 } ^ { N } \sum _ { t = 1 } ^ { T _ { n } } \indicator \left( s _ { t } ^ { n } = k | Y , \theta \right) \right) = \sum _ { n = 1 } ^ { N } \sum _ { t = 1 } ^ { T _ { n } } \gamma _ { n , t } ( k ).
+& \expectation \left( \sum _ { n = 1 } ^ { N } \indicator \left( s _ { 1 } ^ { n } = k | Y , \bs\theta \right) \right) = \sum _ { n = 1 } ^ { N } \gamma _ { n , 1 } ( k ), \\
+& \expectation \left( \sum _ { n = 1 } ^ { N } \sum _ { t = 2 } ^ { T _ { n } } \indicator \left( s _ { t - 1 } ^ { n } = k , s _ { t } ^ { n } = k' | Y , \bs\theta \right) \right) = \sum _ { n = 1 } ^ { N } \sum _ { t = 2 } ^ { T _ { n } } \xi _ { n , t } ( k , k' ), \\
+& \expectation \left( \sum _ { n = 1 } ^ { N } \sum _ { t = 1 } ^ { T _ { n } } \indicator \left( s _ { t } ^ { n } = k | Y , \bs\theta \right) \right) = \sum _ { n = 1 } ^ { N } \sum _ { t = 1 } ^ { T _ { n } } \gamma _ { n , t } ( k ).
 \end{align}
 Where 
 \begin{equation}
 \sum _ { k = 1 } ^ { K } \gamma _ { n , t } ( k ) = 1.
 \end{equation}
-\noindent And being $\xi _ { n,t } ( k , k' )$ 
+\noindent Being $\xi _ { n,t } ( k , k' )$ 
 \begin{equation}
-\xi _ { n,t } ( k , k' ) = \alpha _ { t -1}^{n} ( k ) a _ { k,k' } \prod\limits_{m=1}^{I} \theta_{k,m}^{\mu^{n}_{t,m}} \beta _ { t  }^{n} ( k' ).
+\xi _ { n,t } ( k , k' ) = \alpha _ { t-1 }^{n} ( k ) a _ { k,k' } \prod\limits_{m=1}^{I} \theta_{k,m}^{\mu^{n}_{t,m}} \beta _ { t }^{n} ( k' ),
 \end{equation}
-The terms $\alpha$ and $\beta$ are computed by means of the forward-backward algorithm as follows
+and $ \gamma _ { n , t } ( k ) $
+\begin{equation}\label{eq:gamma}
+\gamma _ { n , t } ( k )\propto \beta _ { t }^{n} ( k )\alpha _ { t }^{n} ( k )
+\end{equation}
+The terms $\alpha$ and $\beta$ are computed by means of the \textbf{forward-backward algorithm }as follows
 \begin{align}
+\label{alfabeta}
 &\alpha _ { 1 }^{n} ( k ) = \pi _ { k } \prod\limits_{m=1}^{I}\theta_{k,m}^{\mu^{n}_{1,m}}, \\
 &\alpha _ { t }^{n} ( k ) = \left( \sum _ { k' = 1 } ^ { K } \alpha _ { t - 1 }^{n} ( k' ) a _ { k',k } \right) \prod\limits_{m=1}^{I}\theta_{k,m}^{\mu^{n}_{t,m}}, \\
 &\beta _ { T_{n} }^{n} ( k ) = 1, \\
@@ -132,7 +139,7 @@ Q \left( \boldsymbol { \theta } , \boldsymbol { \theta } ^ { t - 1 } \right) &= 
 &+ \sum\limits_{k=1}^{K}\sum\limits_{m=1}^{I}\sum _ { n = 1 } ^ { N } \sum _ { t = 1 } ^ { T _ { n } } \gamma _ { n , t } ( k )\mu^{n}_{t,m} \log(\theta_{k,m}).
 \end{split}
 \end{equation}
-\section{Maximum Likelihood estimation of the parameters of the model}
+\section{ML Inference}
 There are three parameters for the model, which are $\mathbf{A}$, $\bs\theta$ and $\bs\pi$, and they are computed by means of Lagrange multipliers.
 \subsection{ML estimation of $\pi_{k}$}
 In order to compute $\pi_{k}$, we first need to take into account the following restrictions
@@ -154,18 +161,18 @@ By first taking the derivative with respect to $\pi_{k}$ and equating it to 0
 \begin{equation}
 \label{deriv_pik}
 \begin{split}
-& \dfrac{\partial L}{\partial \pi_{k}} = 0 = \sum \limits_{n=1}^{N} \dfrac{\gamma_{n,1}(k)}{\pi_{k}} - \lambda, \\
+& \dfrac{\partial L}{\partial \pi_{k}} = \sum \limits_{n=1}^{N} \dfrac{\gamma_{n,1}(k)}{\pi_{k}} - \lambda = 0, \\
 & \pi_{k} = \dfrac{1}{\lambda} \sum \limits_{n=1}^{N} \gamma_{n,1}(k).
 \end{split}
 \end{equation}
 And later with respect to $\lambda$
 \begin{equation}
 \begin{split}
-& \dfrac{\partial L}{\partial \lambda} = 0 = \sum \limits_{k=1}^{K} \pi_{k} - 1,\\
+& \dfrac{\partial L}{\partial \lambda} = \sum \limits_{k=1}^{K} \pi_{k} - 1 = 0,\\
 & \sum \limits_{k=1}^{K} \pi_{k} = 1.\\
 \end{split}
 \end{equation}
-Taking into account the previous equation, if in both sides of \eqref{deriv_pik} summatories all over $K$ are taken, then the value of $\lambda$ can be obtained
+Taking into account the previous equation, if in both sides of Equation \ref{deriv_pik} summatories all over $K$ are taken, then the value of $\lambda$ can be obtained
 \begin{equation}
 \begin{split}
 & \sum \limits_{k=1}^{K}\pi_{k} = \sum \limits_{k=1}^{K} \dfrac{1}{\lambda} \sum \limits_{n=1}^{N} \gamma_{n,1}(k)\\
@@ -207,18 +214,18 @@ By first taking the derivative with respect to $\theta_{k,m}$ and equating it to
 \begin{equation}
 \label{deriv_thetakm}
 \begin{split}
-& \dfrac{\partial L}{\partial \theta_{k,m}} = 0 = \sum \limits_{n=1}^{N}\sum _ { t = 1 } ^ { T _ { n } } \dfrac{\gamma_{n,t}(k)\mu_{t,m}^{n}}{\theta_{k,m}} - \lambda, \\
+& \dfrac{\partial L}{\partial \theta_{k,m}} = \sum \limits_{n=1}^{N}\sum _ { t = 1 } ^ { T _ { n } } \dfrac{\gamma_{n,t}(k)\mu_{t,m}^{n}}{\theta_{k,m}} - \lambda  = 0 , \\
 & \theta_{k,m} = \dfrac{1}{\lambda} \sum \limits_{n=1}^{N} \sum _ { t = 1 } ^ { T _ { n } }\gamma_{n,t}(k)\mu_{t,m}^{n}.
 \end{split}
 \end{equation}
 And later with respect to $\lambda$
 \begin{equation}
 \begin{split}
-& \dfrac{\partial L}{\partial \lambda} = 0 = \sum \limits_{m=1}^{I} \theta_{k,m} - 1,\\
+& \dfrac{\partial L}{\partial \lambda} = \sum \limits_{m=1}^{I} \theta_{k,m} - 1 = 0,\\
 & \sum \limits_{m=1}^{I} \theta_{k,m} = 1.\\
 \end{split}
 \end{equation}
-Taking into account the previous equation, if in both sides of \eqref{deriv_thetakm} summatories all over $I$ are taken, then the value of $\lambda$ can be obtained
+Taking into account the previous equation, if in both sides of Equations \ref{deriv_thetakm} summatories all over $I$ are taken, then the value of $\lambda$ can be obtained
 \begin{equation}
 \begin{split}
 & \sum \limits_{m=1}^{I}\theta_{k,m} = \sum \limits_{m=1}^{I} \dfrac{1}{\lambda} \sum \limits_{n=1}^{N}\sum _ { t = 1 } ^ { T _ { n } } \gamma_{n,t}(k)\mu_{t,m}^{n}\\
@@ -250,14 +257,14 @@ By first taking the derivative with respect to $a_{k,k'}$ and equating it to 0
 \begin{equation}
 \label{deriv_akk}
 \begin{split}
-& \dfrac{\partial L}{\partial a_{k,k'}} = 0 = \sum \limits_{n=1}^{N}\sum _ { t = 2 } ^ { T _ { n } } \dfrac{\xi_{n,t}(kk')}{a_{k,k'}} - \lambda, \\
+& \dfrac{\partial L}{\partial a_{k,k'}} = \sum \limits_{n=1}^{N}\sum _ { t = 2 } ^ { T _ { n } } \dfrac{\xi_{n,t}(kk')}{a_{k,k'}} - \lambda = 0, \\
 & a_{k,k'} = \dfrac{1}{\lambda} \sum \limits_{n=1}^{N} \sum _ { t = 2 } ^ { T _ { n } }\xi_{n,t}(kk').
 \end{split}
 \end{equation}
 And later with respect to $\lambda$
 \begin{equation}
 \begin{split}
-& \dfrac{\partial L}{\partial \lambda} = 0 = \sum \limits_{m=1}^{I} a_{k,k'} - 1,\\
+& \dfrac{\partial L}{\partial \lambda} = \sum \limits_{m=1}^{I} a_{k,k'} - 1 = 0 ,\\
 & \sum \limits_{k'=1}^{K} a_{k,k'} = 1.\\
 \end{split}
 \end{equation}
@@ -274,8 +281,39 @@ And with that value of $\lambda$ the estimated value of $a_{k,k'}$ is
 \widehat{a}_{k,k'} = \dfrac{\sum \limits_{n=1}^{N} \sum \limits_ { t = 1 } ^ { T _ { n } }\xi_{n,t}(k,k')}{\sum \limits_{n=1}^{N}\sum \limits_ { t = 1 } ^ { T _ { n } }\sum \limits_{k'=1}^{K}\xi_{n,t}(k,k')}.
 \end{equation}
 
-\nocite{*}
-\printbibliography
+
+\subsection{MAP decoding based on Forward-Backwards}
+In order to determine the state of each document for the different sequences we obtain the most probable state for each document at each sequence from the parameter $\gamma _ { n , t } ( k )$ which is computed in the E-step of the Baum-Welch EM using Equation \ref{eq:gamma}.
+
+
+\subsection{ML Viterbi decoding}
+As a comparison for the MAP decoding comment above, we have also implemented a Viterbi decoder. The Viterbi decoder is a dynamic programming algorithm for finding the most likely sequence of hidden states result of a sequence of observed events. Since we are dealing with hidden and observed states with HMM, the algorithm suits perfectly to our problem. The Viterbi decoding algorithm looks as follows
+\begin{equation}
+\underset { S } { \operatorname { argmax } } p ( S , Y ) = \underset { i } { \operatorname { argmax } } \left\{ \underset { s _ { 1 : T - 1 } } { \operatorname { argmax } } p \left( s _ { T } = i , s _ { 1 : T - 1 } , Y \right) \right\}.
+\end{equation}
+In particular, we will use an iterative implementation of the Viterbi Algorithm. For such implementation we define two iterative steps described below.
+
+\begin{itemize}
+	\item \textbf{Forward step}: Computed with the following equations
+	\begin{align}
+	\delta_{1}(k)&=\pi_{k} \prod\limits_{m=1}^{I}\theta_{k,m}^{\mu^{n}_{1,m}} \quad 1 \leq k \leq K\\
+	\delta_{t}(k)&=\prod\limits_{m=1}^{I}\theta_{k,m}^{\mu^{n}_{t,m}} \max _{k'} a_{k',k} \delta_{t-1}(k') \quad 1 \leq k \leq K , 1 \leq t \leq T \\
+	\varphi_{t}(k)&=\underset{k'}{\operatorname{argmax}} \hspace{0.1cm}a_{k',k} \delta_{t-1}(k') \quad 1 \leq k \leq K , 1 \leq t \leq T \\
+	\end{align}
+	\item \textbf{Backwards step}: The state estimation is computed using the following Equations
+	\begin{align}
+	\hat{\mathbf{s}}_{T}&=\underset{\boldsymbol{k}}{\arg \max } \delta_{T}(k)\\
+	\hat{s}_{t}&=\varphi_{t+1}\left(\hat{s}_{t+1}\right)  1 \leq t \leq T.
+	\end{align} 
+\end{itemize}
+
+\section{Experiments}
+For the experiments...\\
+
+\noindent One important aspect about the implementation of the algorithm is that instead of working with the actual $\xi _ { n,t } ( k , k' )$ we work with a similar implementation used in \cite{murphy2012machine}, which consider working with the expected sufficient statistics for the transition matrix, for a given observation sequence. This may be rewritten as follows
+\begin{equation}
+\xi_\Sigma(k,k^{\prime}) = \sum\limits_{t=2}^{T} p(S(t) = k, S(t+1) = k^{\prime} | y(1:T)),
+\end{equation}
+where the subscript $\Sigma$ indicates the sum over $t$. Notice that, for a given sequence, this matrix is no longer a tensor but a matrix of dimension $K\times K$.
 
 \end{document}
-
