@@ -12,11 +12,12 @@ function [alpha_n,beta_n] = hmmFwdBack(pi,A,Pb_mat)
 % beta(i,t) propto p(y(t+1:T) | S(t=i))
 % loglik = log p(y(1:T))
 % 
+%% DEPRECATED
 % % Calculate alpha: TxK
 % alpha_n = hmmForward(pi,A,Pb_mat);
 % % Calculate beta: TxK
 % beta_n = hmmBackwards(A,Pb_mat);
-
+%%
 % Calculate alpha: KxT
 alpha_n = hmmForward(pi,A,Pb_mat);
 % Calculate beta: KxT
@@ -32,6 +33,7 @@ function  alpha_n =  hmmForward(pi,A,Pb_mat)
 % OUTPUT
 % alpha(i,t)  = p(S(t)=i| y(1:t)), KxT
 
+%% DEPRECATED
 % [T,K] = size(Pb_mat);
 % alpha_n = zeros(T,K);
 % 
@@ -46,7 +48,7 @@ function  alpha_n =  hmmForward(pi,A,Pb_mat)
 %         alpha_n(t,:) = (alpha_n(t-1,:)*AT) .* Pb_mat(t,:);
 %         alpha_n(t,:) = alpha_n(t,:)./sum(alpha_n(t,:));
 %     end
-
+%% 
 [K,T] = size(Pb_mat);
 alpha_n = zeros(K,T);
 
@@ -71,7 +73,7 @@ function beta_n = hmmBackwards(A,Pb_mat)
 % OUTPUT
 % beta(i,t) propto p(y(t+1:T) | S(t=i))
 
-
+%% DEPRECATED
 % [T,K] = size(Pb_mat);
 % beta_n = zeros(T,K);
 % beta_n(T,:) = ones(K,1);
@@ -80,10 +82,10 @@ function beta_n = hmmBackwards(A,Pb_mat)
 %     beta_n(t,:) = A * (beta_n(t+1,:) .* prob_b_t_plus_1)';
 %     beta_n(t,:)  = beta_n(t,:)./sum(beta_n(t,:));
 % end
-
+%%
 [K,T] = size(Pb_mat);
 beta_n = zeros(K,T);
-beta_n(:,T) = ones(K,1)/K;
+beta_n(:,T) = ones(K,1);
 for t=T-1:-1:1
     prob_b_t_plus_1 = Pb_mat(:,t+1);
     beta_n(:,t) = A * (beta_n(:,t+1) .* prob_b_t_plus_1);

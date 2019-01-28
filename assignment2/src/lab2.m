@@ -7,7 +7,7 @@ load('observed.mat');
 %% SETUP
 K = 5;
 max_iter = 100;
-n_init = 5;
+n_init = 10;
 epsilon = 1e-3;
 debug = false;
 
@@ -27,8 +27,8 @@ fprintf('Done!')
 model_opt_k = cell(1,K-1);
 ll_opt_k = zeros(1,K-1);
 
-% aic_list = zeros(1,K-1);
-% bic_list = zeros(1,K-1);
+aic_list = zeros(1,K-1);
+bic_list = zeros(1,K-1);
 
 for k = 2:K
     
@@ -56,7 +56,6 @@ for k = 2:K
     % Obtain optimal for initializations 
     [ll_opt_k(k-1), idx_opt] = max(ll);
     model_opt_k{k-1} = model_cells{idx_opt};
-%     [aic_list(k-1), bic_list(k-1)] = model_selection(ll_opt_k(k-1),k,I,N);
     
     opt_model_k = model_opt_k{k-1};
     % Plot Q
@@ -89,6 +88,18 @@ for k = 2:K
 %     
 %     
 end
+
+
+%% Plot LL increasing with K
+figure
+hold on
+for k = 1:1:K-1
+    plot(model_opt_k{k}.Q, 'DisplayName',sprintf('K = %d', k))
+    xlabel('$Iterations$','Interpreter','latex')
+    title('Comparison for different $K$','Interpreter','latex')
+end
+leg = legend;
+saveas(gcf,sprintf('./images/ll_comparison.png'))
 
 fprintf('Done!\n');     
 

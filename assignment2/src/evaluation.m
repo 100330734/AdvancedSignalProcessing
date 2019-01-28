@@ -3,6 +3,8 @@ function Q = evaluation(pi,A,theta,gamma,xi,mu)
 
 N = length(gamma);
 T = size(mu{1},1);
+K = size(pi,1);
+I = size(theta,2);
 
 pi_term = 0;
 A_term = 0;
@@ -10,7 +12,7 @@ theta_term = 0;
 
 for n = 1:1:N
     % pi term
-    pi_term = pi_term + gamma{n}(:,1)'*log(pi);
+    pi_term = pi_term + gamma{n}(:,1).'*log(pi);
     
     % a term
 %     rep_A = repmat(A,1,1,T-1);
@@ -20,7 +22,8 @@ for n = 1:1:N
     A_term = A_term + sum(sum(xi{n}.*log(A)));
     
     % theta term
-    prod_term = gamma{n}'.*(mu{n}*log(theta'));
+    prod_term = sum(sum(gamma{n}'.*(mu{n}*log(theta'))));
+
 
     theta_term  = theta_term + sum(sum(prod_term)); 
 end

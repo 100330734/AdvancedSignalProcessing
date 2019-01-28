@@ -65,7 +65,7 @@ theta = zeros(K,I);
 
 for n = 1:1:N
     % Rescale theta so that we don't get 0.
-%     mu_rescale = rescale(mu{n}) + eps;
+% %     mu_rescale = rescale(mu{n}) + eps;
     theta = theta + gamma{n}*mu{n};
 end
 
