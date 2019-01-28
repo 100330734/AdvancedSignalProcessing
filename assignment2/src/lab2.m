@@ -93,8 +93,8 @@ end
 %% Plot LL increasing with K
 figure
 hold on
-for k = 1:1:K-1
-    plot(model_opt_k{k}.Q, 'DisplayName',sprintf('K = %d', k))
+for k = 2:1:K
+    plot(model_opt_k{k-1}.Q, 'DisplayName',sprintf('K = %d', k))
     xlabel('$Iterations$','Interpreter','latex')
     title('Comparison for different $K$','Interpreter','latex')
 end
