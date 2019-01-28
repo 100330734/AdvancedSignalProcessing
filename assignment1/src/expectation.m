@@ -1,7 +1,7 @@
 function [r] = expectation(K,N,pi,theta,mu)
 %EXPECTATION E-step
 
-% CLIPPING
+% %CLIPPING
 % r = zeros(N,K);
 % for i = 1:N
 %     for k = 1:K
