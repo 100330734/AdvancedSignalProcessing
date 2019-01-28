@@ -5,6 +5,7 @@
 {geometry}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{caption,subcaption}
 \usepackage{graphicx}%
 \newcommand{\indicator}{\mathbb{I}} 
 \newcommand{\expectation}{\mathbb{E}} 
@@ -241,8 +242,11 @@ And with that value of $\lambda$ the estimated value of $a_{k,k'}$ is
 \end{equation}
 
 \section{Experiments}
+The experiments that have been done include 100 iterations, with a tolerance value of $10^{-3}$ and with 30 initializations.
+
 \subsection{MAP decoding}
 The state-by-state MAP decoding has been developed with the forward-backward algorithm, whose parameters $\alpha_{t}^{n}(k)$ and $\beta_{t}^{n}(k)$ have been computed as stated in \eqref{alfabeta} and following.
+
 \subsection{ML decoding}
 For the maximum likelihood sequence decoding a Viterbi algorithm has been implemented. The required parameters $\delta_{t}(i)$, $\varphi_{t}(i)$, and the detected states $\hat{s}_{t}$ are defined as follows.
 \begin{align}
@@ -250,6 +254,79 @@ For the maximum likelihood sequence decoding a Viterbi algorithm has been implem
 \delta_{t}(k)&=\prod\limits_{m=1}^{I}\theta_{k,m}^{\mu^{n}_{t,m}} \max _{k'} a_{k',k} \delta_{t-1}(k') \\
 \varphi_{t}(k)&=\underset{k'}{\operatorname{argmax}} \hspace{0.1cm}a_{k',k} \delta_{t-1}(k')\\
 \hat{\mathbf{s}}_{T}&=\underset{\boldsymbol{k}}{\arg \max } \delta_{T}(k)\\
-\hat{s}_{t}&=\varphi_{t+1}\left(\hat{s}_{t+1}\right) ºº
+\hat{s}_{t}&=\varphi_{t+1}\left(\hat{s}_{t+1}\right) 
 \end{align}
+\subsection{Simulations}
+In Figure \ref{fig:ll_comparison} we show first all the log-likelihoods together, where one can infer that the best case happens for K = 5 since it gives the curve with the biggest values.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.8\textwidth]{images/ll_comparison.png}
+	\caption{Comparison of the log-likelihoods for K $\in$ [2,5]}
+	\label{fig:ll_comparison}
+\end{figure}
+
+Next, Figure \ref{fig:Q_all} displays like Figure \ref{fig:ll_comparison} all log-likelihood curves but in this case separated. \\
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{0.45\textwidth}
+		\includegraphics[width=\textwidth]{images/Q_2_topics.png}
+		\caption{Log-likelihood curve for K = 2}
+		\label{fig:Q2}
+	\end{subfigure}
+	~	
+	\begin{subfigure}{0.45\textwidth}
+		\includegraphics[width=\textwidth]{images/Q_3_topics.png}
+		\caption{Log-likelihood curve for K = 3}
+		\label{fig:Q3}
+	\end{subfigure}
+		~	
+	\begin{subfigure}{0.45\textwidth}
+		\includegraphics[width=\textwidth]{images/Q_4_topics.png}
+		\caption{Log-likelihood curve for K = 4}
+		\label{fig:Q4}
+	\end{subfigure}
+		~	
+	\begin{subfigure}{0.45\textwidth}
+		\includegraphics[width=\textwidth]{images/Q_5_topics.png}
+		\caption{Log-likelihood curve for K = 5}
+		\label{fig:Q5}
+	\end{subfigure}
+	\caption{Separated log-likelihood curves for K $\in$ [2,5]}
+	\label{fig:Q_all}
+\end{figure}
+
+\noindent This last set of figures, which include from Figure \ref{fig:viterbi_2} until Figure \ref{fig:viterbi_5}, show the estimated states for sequences for K $\in$ [2,5].
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{images/comparison_FB_Viterbi_K_2.png}
+	\caption{Forward Backward (MAP) and Viterbi (ML) estimations for K = 2}
+	\label{fig:viterbi_2}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{images/comparison_FB_Viterbi_K_3.png}
+\caption{Forward Backward (MAP) and Viterbi (ML) estimations for K = 3}
+	\label{fig:viterbi_3}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{images/comparison_FB_Viterbi_K_4.png}
+	\caption{Forward Backward (MAP) and Viterbi (ML) estimations for K = 4}
+	\label{fig:viterbi_4}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{images/comparison_FB_Viterbi_K_5.png}
+	\caption{Forward Backward (MAP) and Viterbi (ML) estimations for K = 5}
+	\label{fig:viterbi_5}
+\end{figure}
+
+\section{Final Thoughts}
+By looking at the plots, we can see a proper behaviour of of the curves (which begin growing up and later they stabilize around some fixed value) and the algorithms. Both experiments seem to have a similar performance, they show that they reach almost always the same states for all the sequences. And at last, a bigger number of K increases the complexity of the model, which includes the number of states among other things, but gives a better performance with a bigger log-likelihood curve.
 \end{document}
